@@ -270,14 +270,8 @@ export default function TarifsPage() {
         {/* Right: Spline 3D ou drone SVG en fallback */}
         <div className="hidden md:flex md:w-1/2 relative items-center justify-center overflow-hidden">
           <div className="absolute left-0 top-0 bottom-0 w-px bg-[#1A1917]/[0.06]" />
-          {/*
-            SPLINE DRONE — remplace l'URL ci-dessous par ta scène drone :
-            1. Va sur community.spline.design, cherche "drone", ouvre une scène
-            2. Clique Export → React → copie l'URL prod.spline.design/…/scene.splinecode
-            3. Colle-la ici
-          */}
           <SplineScene
-            scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
+            scene="https://prod.spline.design/DQNn6KoBM5YFGYXD/scene.splinecode"
             className="w-full h-full"
           />
         </div>
