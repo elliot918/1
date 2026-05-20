@@ -4,6 +4,9 @@ import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import Image from 'next/image'
 import { SplineScene } from '@/components/ui/splite'
+import { AuroraBackground } from '@/components/ui/aurora-background'
+import { ShaderAnimation } from '@/components/ui/shader-animation'
+import { Typewriter } from '@/components/ui/typewriter'
 import {
   Zap, Users, Building2, UserCircle, Clock, Repeat, Leaf,
   Flame, BarChart3, Star, ChevronRight, Phone, Mail, MapPin, Menu,
@@ -198,76 +201,86 @@ export default function TarifsPage() {
         </div>
       </nav>
 
-      {/* ═══ HERO — split layout avec drone ═══ */}
-      <section className="h-screen flex overflow-hidden">
+      {/* ═══ HERO — Aurora + Typewriter + Spline drone ═══ */}
+      <AuroraBackground className="h-screen flex overflow-hidden">
 
-        {/* Left: text */}
-        <div className="w-full md:w-1/2 flex flex-col justify-center px-10 lg:px-20 pt-16 relative bg-[#F8F5F0]">
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.25 }}
-          >
-            <Label>Nos tarifs et nos prestations</Label>
-          </motion.div>
+        {/* Left: ShaderAnimation + text */}
+        <div className="w-full md:w-1/2 flex flex-col justify-center px-10 lg:px-20 pt-16 relative">
 
-          <motion.h1
-            initial={{ opacity: 0, y: 32 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.05, delay: 0.45, ease: EASE }}
-            className="mt-5 font-bold leading-[0.88] text-[#1A1917]"
-            style={{
-              fontFamily: 'var(--font-playfair)',
-              fontSize: 'clamp(3rem, 6.5vw, 6rem)',
-            }}
-          >
-            Spectacle<br />de drones
-          </motion.h1>
+          {/* Shader subtle overlay */}
+          <ShaderAnimation className="absolute inset-0 opacity-60 pointer-events-none" />
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.9, delay: 0.85 }}
-            className="mt-6 text-[15px] text-[#1A1917]/40 italic tracking-wide"
-            style={{ fontFamily: 'var(--font-playfair)' }}
-          >
-            Combinez féérie et technologie
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 1.15 }}
-            className="mt-10 flex flex-col sm:flex-row gap-3"
-          >
-            <a
-              href="#contact"
-              className="group inline-flex items-center gap-2 bg-[#1A1917] text-[#F8F5F0] text-[11px] tracking-[0.25em] uppercase font-bold px-8 py-4 hover:bg-[#2A2926] transition-colors duration-300"
+          {/* Content */}
+          <div className="relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.25 }}
             >
-              Prenons contact
-              <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-            </a>
-            <a
-              href="#offre"
-              className="inline-flex items-center gap-2 border border-[#1A1917]/[0.15] text-[#1A1917]/40 text-[11px] tracking-[0.25em] uppercase px-8 py-4 hover:border-[#1A1917]/30 hover:text-[#1A1917]/70 transition-all duration-300"
+              <Label>Nos tarifs et nos prestations</Label>
+            </motion.div>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 32 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.05, delay: 0.45, ease: EASE }}
+              className="mt-5 font-bold leading-[0.88] text-[#1A1917]"
+              style={{
+                fontFamily: 'var(--font-playfair)',
+                fontSize: 'clamp(2.8rem, 6vw, 5.5rem)',
+                minHeight: '2.2em',
+              }}
             >
-              Découvrir
-            </a>
-          </motion.div>
+              <Typewriter
+                words={['Spectacle de drones', 'Féerie dans le ciel', 'Made in France']}
+              />
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.9, delay: 0.85 }}
+              className="mt-6 text-[15px] text-[#1A1917]/40 italic tracking-wide"
+              style={{ fontFamily: 'var(--font-playfair)' }}
+            >
+              Combinez féérie et technologie
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 1.15 }}
+              className="mt-10 flex flex-col sm:flex-row gap-3"
+            >
+              <a
+                href="#contact"
+                className="group inline-flex items-center gap-2 bg-[#1A1917] text-[#F8F5F0] text-[11px] tracking-[0.25em] uppercase font-bold px-8 py-4 hover:bg-[#2A2926] transition-colors duration-300"
+              >
+                Prenons contact
+                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+              </a>
+              <a
+                href="#offre"
+                className="inline-flex items-center gap-2 border border-[#1A1917]/[0.15] text-[#1A1917]/40 text-[11px] tracking-[0.25em] uppercase px-8 py-4 hover:border-[#1A1917]/30 hover:text-[#1A1917]/70 transition-all duration-300"
+              >
+                Découvrir
+              </a>
+            </motion.div>
+          </div>
 
           {/* Scroll cue */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 2 }}
-            className="absolute bottom-10 left-10 lg:left-20 flex items-center gap-3"
+            className="absolute bottom-10 left-10 lg:left-20 flex items-center gap-3 z-10"
           >
             <div className="w-8 h-px bg-[#9E8060]" />
             <span className="text-[#1A1917]/25 text-[9px] tracking-[0.4em] uppercase">Défiler</span>
           </motion.div>
         </div>
 
-        {/* Right: Spline 3D ou drone SVG en fallback */}
+        {/* Right: Spline 3D drone */}
         <div className="hidden md:flex md:w-1/2 relative items-center justify-center overflow-hidden">
           <div className="absolute left-0 top-0 bottom-0 w-px bg-[#1A1917]/[0.06]" />
           <SplineScene
@@ -275,7 +288,8 @@ export default function TarifsPage() {
             className="w-full h-full"
           />
         </div>
-      </section>
+
+      </AuroraBackground>
 
       {/* ═══ STATS ═══ */}
       <section className="border-t border-b border-[#1A1917]/[0.07] bg-[#F2EDE5]">
