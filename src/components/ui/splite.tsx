@@ -27,27 +27,49 @@ class SplineErrorBoundary extends Component<
   }
 }
 
+/* Premium drone SVG — shown while Spline loads or if it fails */
 const SceneFallback = ({ className }: { className?: string }) => (
   <div
-    className={`${className ?? ''} flex items-center justify-center`}
-    style={{ background: '#050505' }}
+    className={`${className ?? ''} flex items-center justify-center bg-[#F2EDE5]`}
   >
-    <div
-      className="w-32 h-32 rounded-full border border-white/10 flex items-center justify-center"
-      style={{ boxShadow: 'inset 0 0 40px rgba(201,168,76,0.06)' }}
+    <svg
+      viewBox="0 0 320 280"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      style={{ width: 'min(380px, 90%)', height: 'auto' }}
     >
-      <svg viewBox="0 0 64 64" fill="none" className="w-16 h-16 opacity-20">
-        <circle cx="32" cy="32" r="4" fill="#C9A84C" />
-        <circle cx="12" cy="20" r="3" fill="#C9A84C" />
-        <circle cx="52" cy="20" r="3" fill="#C9A84C" />
-        <circle cx="12" cy="44" r="3" fill="#C9A84C" />
-        <circle cx="52" cy="44" r="3" fill="#C9A84C" />
-        <line x1="32" y1="32" x2="12" y2="20" stroke="#C9A84C" strokeWidth="1" />
-        <line x1="32" y1="32" x2="52" y2="20" stroke="#C9A84C" strokeWidth="1" />
-        <line x1="32" y1="32" x2="12" y2="44" stroke="#C9A84C" strokeWidth="1" />
-        <line x1="32" y1="32" x2="52" y2="44" stroke="#C9A84C" strokeWidth="1" />
-      </svg>
-    </div>
+      {/* Shadow */}
+      <ellipse cx="160" cy="258" rx="56" ry="7" fill="#1A1917" fillOpacity="0.06" />
+
+      {/* Arms */}
+      <line x1="160" y1="130" x2="60"  y2="72"  stroke="#1A1917" strokeWidth="2.5" strokeLinecap="round" />
+      <line x1="160" y1="130" x2="260" y2="72"  stroke="#1A1917" strokeWidth="2.5" strokeLinecap="round" />
+      <line x1="160" y1="150" x2="60"  y2="208" stroke="#1A1917" strokeWidth="2.5" strokeLinecap="round" />
+      <line x1="160" y1="150" x2="260" y2="208" stroke="#1A1917" strokeWidth="2.5" strokeLinecap="round" />
+
+      {/* Motor housings */}
+      {([[60,72],[260,72],[60,208],[260,208]] as [number,number][]).map(([cx,cy], i) => (
+        <g key={i}>
+          <circle cx={cx} cy={cy} r="20" fill="#F8F5F0" stroke="#1A1917" strokeWidth="1.2" />
+          <circle cx={cx} cy={cy} r="4.5" fill="#9E8060" />
+          {/* Static propeller lines */}
+          <line x1={cx-22} y1={cy} x2={cx+22} y2={cy} stroke="#1A1917" strokeWidth="1" strokeLinecap="round" strokeOpacity="0.2" />
+          <line x1={cx} y1={cy-22} x2={cx} y2={cy+22} stroke="#1A1917" strokeWidth="1" strokeLinecap="round" strokeOpacity="0.2" />
+        </g>
+      ))}
+
+      {/* Body */}
+      <rect x="136" y="116" width="48" height="48" rx="6" fill="#1A1917" />
+      <rect x="142" y="122" width="36" height="36" rx="4" fill="#F8F5F0" fillOpacity="0.05" />
+
+      {/* Camera gimbal */}
+      <circle cx="160" cy="168" r="9"   fill="#2A2926" />
+      <circle cx="160" cy="168" r="4.5" fill="#1A1917" />
+      <circle cx="160" cy="168" r="2"   fill="#9E8060" />
+
+      {/* LED */}
+      <circle cx="160" cy="130" r="2.5" fill="#9E8060" fillOpacity="0.9" />
+    </svg>
   </div>
 )
 
