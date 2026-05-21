@@ -78,7 +78,13 @@ export function SplineScene({ scene, className }: SplineSceneProps) {
   return (
     <SplineErrorBoundary fallback={fallback}>
       <Suspense fallback={fallback}>
-        <Spline scene={scene} className={className} />
+        {/* background:'transparent' sets the ParentSize container bg;
+            [&_canvas]:bg-transparent strips any CSS background on the canvas itself */}
+        <Spline
+          scene={scene}
+          className={`${className ?? ''} [&_canvas]:!bg-transparent`}
+          style={{ background: 'transparent' }}
+        />
       </Suspense>
     </SplineErrorBoundary>
   )
