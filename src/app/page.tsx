@@ -126,11 +126,11 @@ export default function TarifsPage() {
         </div>
       </nav>
 
-      {/* ═══ HERO — Aurora + Typewriter + Spline drone ═══ */}
+      {/* ═══ HERO — Aurora + Typewriter (pleine largeur, sans drone) ═══ */}
       <AuroraBackground className="h-screen flex overflow-hidden">
 
-        {/* Left: ShaderAnimation + text */}
-        <div className="w-full md:w-1/2 flex flex-col justify-center px-10 lg:px-20 pt-16 relative">
+        {/* Full-width: ShaderAnimation + text */}
+        <div className="w-full flex flex-col justify-center px-10 lg:px-32 xl:px-48 pt-16 relative">
 
           {/* Shader subtle overlay */}
           <ShaderAnimation className="absolute inset-0 opacity-50 pointer-events-none" />
@@ -205,15 +205,6 @@ export default function TarifsPage() {
           </motion.div>
         </div>
 
-        {/* Right: Spline 3D drone — full half, transparent bg */}
-        <div className="hidden md:flex md:w-1/2 relative items-stretch overflow-hidden">
-          <div className="absolute left-0 top-0 bottom-0 w-px bg-white/[0.05]" />
-          <SplineScene
-            scene="https://prod.spline.design/DQNn6KoBM5YFGYXD/scene.splinecode"
-            className="w-full h-full"
-          />
-        </div>
-
       </AuroraBackground>
 
       {/* ═══ STATS ═══ */}
@@ -276,13 +267,10 @@ export default function TarifsPage() {
             </div>
 
             <FadeUp delay={0.2}>
-              <div className="relative aspect-[4/5] overflow-hidden">
-                <Image
-                  src="https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=900&q=80&auto=format"
-                  alt="Drone professionnel en vol"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-cover hover:scale-[1.03] transition-transform duration-700"
+              <div className="relative w-full" style={{ height: 'clamp(420px, 55vw, 640px)' }}>
+                <SplineScene
+                  scene="https://prod.spline.design/DQNn6KoBM5YFGYXD/scene.splinecode"
+                  className="w-full h-full"
                 />
               </div>
             </FadeUp>
