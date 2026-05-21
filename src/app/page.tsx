@@ -116,47 +116,37 @@ const dronePhotos = [
   { title: 'Made in France',        link: '#', thumbnail: 'https://images.unsplash.com/photo-1509812329878-1faba51a30d2?w=600&q=80&auto=format' },
 ]
 
+function StickyImg({ src, label }: { src: string; label: string }) {
+  return (
+    <div className="relative h-full w-full overflow-hidden">
+      <img src={src} alt={label} className="absolute inset-0 h-full w-full object-cover" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+      <span className="absolute bottom-4 left-4 text-[#E8E2D8]/70 text-[10px] tracking-[0.32em] uppercase">{label}</span>
+    </div>
+  )
+}
+
 // StickyScroll prestations content
 const prestations = [
   {
     title: 'Spectacles d\'entreprise',
     description: 'Utilisez les spectacles de drones pour afficher votre logo, un slogan ou toute autre communication de marque lors de vos événements corporate. Un impact visuel inoubliable pour vos clients et collaborateurs.',
-    content: (
-      <div className="h-full w-full flex flex-col items-center justify-center gap-4">
-        <Building2 className="w-12 h-12 text-[#9E8060]" strokeWidth={1} />
-        <span className="text-[#E8E2D8]/50 text-[11px] tracking-[0.3em] uppercase">Entreprises</span>
-      </div>
-    ),
+    content: <StickyImg src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80&auto=format" label="Entreprises" />,
   },
   {
     title: 'Collectivités et associations',
     description: 'Remplacez les feux d\'artifice par des spectacles écologiques et sans risque, conformes aux nouvelles réglementations environnementales. Des animations féeriques pour tous vos événements publics.',
-    content: (
-      <div className="h-full w-full flex flex-col items-center justify-center gap-4">
-        <Users className="w-12 h-12 text-[#9E8060]" strokeWidth={1} />
-        <span className="text-[#E8E2D8]/50 text-[11px] tracking-[0.3em] uppercase">Collectivités</span>
-      </div>
-    ),
+    content: <StickyImg src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&q=80&auto=format" label="Collectivités" />,
   },
   {
     title: 'Particuliers et mariages',
     description: 'Des formules pré-conçues pour des moments inoubliables lors de mariages, anniversaires et événements privés. La magie des drones accessible à tous les budgets.',
-    content: (
-      <div className="h-full w-full flex flex-col items-center justify-center gap-4">
-        <UserCircle className="w-12 h-12 text-[#9E8060]" strokeWidth={1} />
-        <span className="text-[#E8E2D8]/50 text-[11px] tracking-[0.3em] uppercase">Particuliers</span>
-      </div>
-    ),
+    content: <StickyImg src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=600&q=80&auto=format" label="Particuliers & Mariages" />,
   },
   {
     title: 'Création sur-mesure',
     description: 'Nous concevons des chorégraphies entièrement personnalisées pour transporter votre public dans votre univers. De la conception à la réalisation, un accompagnement total.',
-    content: (
-      <div className="h-full w-full flex flex-col items-center justify-center gap-4">
-        <Star className="w-12 h-12 text-[#9E8060]" strokeWidth={1} />
-        <span className="text-[#E8E2D8]/50 text-[11px] tracking-[0.3em] uppercase">Sur-mesure</span>
-      </div>
-    ),
+    content: <StickyImg src="https://images.unsplash.com/photo-1487887235947-a955ef187fcc?w=600&q=80&auto=format" label="Sur-mesure" />,
   },
 ]
 
