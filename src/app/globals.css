@@ -163,6 +163,15 @@
   will-change: transform;
 }
 
+/* ── Drone levitation ── */
+@keyframes levitate {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-22px); }
+}
+.animate-levitate {
+  animation: levitate 5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
 /* ── Thin scrollbar ── */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: #F2EDE5; }
