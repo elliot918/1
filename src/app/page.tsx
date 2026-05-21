@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, useInView } from 'framer-motion'
+import { motion, useInView, useReducedMotion } from 'framer-motion'
 import { useRef } from 'react'
 import Image from 'next/image'
 import { SplineScene } from '@/components/ui/splite'
@@ -12,7 +12,9 @@ import {
   Flame, BarChart3, Star, ChevronRight, Phone, Mail, MapPin, Menu,
 } from 'lucide-react'
 
-/* ── Social icons ── */
+/* ─────────────────────────────────────────
+   Social icons
+───────────────────────────────────────── */
 const IconInstagram = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
     <rect x="2" y="2" width="20" height="20" rx="5" />
@@ -39,9 +41,16 @@ const IconYoutube = () => (
   </svg>
 )
 
-/* ── Animation helpers ── */
-const EASE = [0.25, 0.46, 0.45, 0.94] as const
+/* ─────────────────────────────────────────
+   Animation constants (Emil Kowalski)
+   - Strong ease-out only, no ease-in
+   - UI interactions < 300ms
+   - Scroll reveals: 550ms (marketing, can be longer)
+───────────────────────────────────────── */
+const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1]
+const EASE_OUT_FAST: [number, number, number, number] = [0.16, 1, 0.3, 1]
 
+/* Scroll-reveal with reduced-motion support */
 function FadeUp({
   children,
   delay = 0,
@@ -52,13 +61,19 @@ function FadeUp({
   className?: string
 }) {
   const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-80px' })
+  const inView = useInView(ref, { once: true, margin: '-60px' })
+  const reduced = useReducedMotion()
+
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 22 }}
-      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 22 }}
-      transition={{ duration: 0.75, delay, ease: EASE }}
+      initial={{ opacity: 0, y: reduced ? 0 : 18 }}
+      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: reduced ? 0 : 18 }}
+      transition={{
+        duration: reduced ? 0.15 : 0.55,
+        delay: reduced ? 0 : delay,
+        ease: EASE_OUT,
+      }}
       className={className}
     >
       {children}
@@ -66,40 +81,65 @@ function FadeUp({
   )
 }
 
+/* Pressable wrapper: scale 0.97 on tap (Emil: buttons must feel responsive) */
+function Press({
+  children,
+  className,
+  href,
+}: {
+  children: React.ReactNode
+  className?: string
+  href: string
+}) {
+  const reduced = useReducedMotion()
+  return (
+    <motion.a
+      href={href}
+      whileTap={reduced ? {} : { scale: 0.97 }}
+      transition={{ duration: 0.12, ease: EASE_OUT_FAST }}
+      className={className}
+    >
+      {children}
+    </motion.a>
+  )
+}
+
 /* Bronze label */
 function Label({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-block text-[#9E8060] text-[10px] tracking-[0.35em] uppercase">
+    <span className="inline-block text-[#9E8060] text-[9px] tracking-[0.4em] uppercase font-medium">
       {children}
     </span>
   )
 }
 
-/* Short bronze rule */
+/* Bronze rule */
 function Rule() {
-  return <div className="my-10 w-12 h-px bg-[#9E8060]" />
+  return <div className="my-10 w-10 h-px bg-[#9E8060]/60" />
 }
 
-/* ═══════════════════════════════════════════
+/* ─────────────────────────────────────────
    PAGE
-═══════════════════════════════════════════ */
+───────────────────────────────────────── */
 export default function TarifsPage() {
+  const reduced = useReducedMotion()
+
   return (
     <div
       className="min-h-screen bg-[#0A0A0A] text-[#E8E2D8] overflow-x-hidden"
       style={{ fontFamily: 'var(--font-inter)' }}
     >
 
-      {/* ═══ NAV ═══ */}
-      <nav className="fixed top-0 inset-x-0 z-50 bg-[#0A0A0A]/90 backdrop-blur-xl border-b border-white/[0.06]">
+      {/* ── NAV ── */}
+      <nav className="fixed top-0 inset-x-0 z-50 bg-[#0A0A0A]/85 backdrop-blur-2xl border-b border-white/[0.05]">
         <div className="max-w-7xl mx-auto px-8 h-16 flex items-center justify-between">
           <span
-            className="text-[11px] font-bold tracking-[0.22em] uppercase text-[#E8E2D8]"
+            className="text-[10px] font-bold tracking-[0.28em] uppercase text-[#E8E2D8]"
             style={{ fontFamily: 'var(--font-playfair)' }}
           >
             Drone de Ciel{' '}
-            <span className="text-[#9E8060]">|</span>{' '}
-            <span className="text-[#E8E2D8]/35 font-normal">Made In France</span>
+            <span className="text-[#9E8060]">·</span>{' '}
+            <span className="text-[#E8E2D8]/30 font-normal tracking-[0.2em]">Made In France</span>
           </span>
 
           <div className="hidden md:flex items-center gap-10">
@@ -107,17 +147,17 @@ export default function TarifsPage() {
               <a
                 key={l}
                 href="#"
-                className="text-[#E8E2D8]/35 text-[11px] tracking-[0.2em] uppercase hover:text-[#E8E2D8] transition-colors duration-200"
+                className="text-[#E8E2D8]/30 text-[10px] tracking-[0.22em] uppercase hover:text-[#E8E2D8]/70 transition-colors duration-200"
               >
                 {l}
               </a>
             ))}
-            <a
+            <Press
               href="#contact"
-              className="border border-white/20 text-[#E8E2D8]/60 text-[11px] tracking-[0.2em] uppercase px-5 py-2.5 hover:bg-white hover:text-[#0A0A0A] transition-all duration-300"
+              className="border border-white/15 text-[#E8E2D8]/50 text-[10px] tracking-[0.22em] uppercase px-5 py-2.5 hover:bg-white hover:text-[#0A0A0A] transition-colors duration-200 cursor-pointer"
             >
               Prenons contact
-            </a>
+            </Press>
           </div>
 
           <button className="md:hidden text-[#E8E2D8]/40 hover:text-[#E8E2D8]">
@@ -126,104 +166,100 @@ export default function TarifsPage() {
         </div>
       </nav>
 
-      {/* ═══ HERO — Aurora + Typewriter (pleine largeur, sans drone) ═══ */}
-      <AuroraBackground className="h-screen flex overflow-hidden">
+      {/* ── HERO — Aurora + ShaderAnimation + Typewriter ── */}
+      <AuroraBackground className="h-screen overflow-hidden">
+        <ShaderAnimation className="absolute inset-0 opacity-40 pointer-events-none" />
 
-        {/* Full-width: ShaderAnimation + text */}
-        <div className="w-full flex flex-col justify-center px-10 lg:px-32 xl:px-48 pt-16 relative">
+        <div className="relative z-10 h-full flex flex-col justify-center px-10 lg:px-24 xl:px-36 pt-16 max-w-5xl">
 
-          {/* Shader subtle overlay */}
-          <ShaderAnimation className="absolute inset-0 opacity-50 pointer-events-none" />
-
-          {/* Content */}
-          <div className="relative z-10">
-            <motion.div
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.25 }}
-            >
-              <Label>Nos tarifs et nos prestations</Label>
-            </motion.div>
-
-            <motion.h1
-              initial={{ opacity: 0, y: 32 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.05, delay: 0.45, ease: EASE }}
-              className="mt-5 font-bold leading-[0.88] text-[#E8E2D8]"
-              style={{
-                fontFamily: 'var(--font-playfair)',
-                fontSize: 'clamp(2.8rem, 6vw, 5.5rem)',
-                minHeight: '2.2em',
-              }}
-            >
-              <Typewriter
-                words={['Spectacle de drones', 'Féerie dans le ciel', 'Made in France']}
-              />
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.9, delay: 0.85 }}
-              className="mt-6 text-[15px] text-[#E8E2D8]/35 italic tracking-wide"
-              style={{ fontFamily: 'var(--font-playfair)' }}
-            >
-              Combinez féérie et technologie
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 1.15 }}
-              className="mt-10 flex flex-col sm:flex-row gap-3"
-            >
-              <a
-                href="#contact"
-                className="group inline-flex items-center gap-2 bg-[#E8E2D8] text-[#0A0A0A] text-[11px] tracking-[0.25em] uppercase font-bold px-8 py-4 hover:bg-white transition-colors duration-300"
-              >
-                Prenons contact
-                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-              </a>
-              <a
-                href="#offre"
-                className="inline-flex items-center gap-2 border border-white/[0.12] text-[#E8E2D8]/35 text-[11px] tracking-[0.25em] uppercase px-8 py-4 hover:border-white/25 hover:text-[#E8E2D8]/70 transition-all duration-300"
-              >
-                Découvrir
-              </a>
-            </motion.div>
-          </div>
-
-          {/* Scroll cue */}
           <motion.div
+            initial={{ opacity: 0, y: reduced ? 0 : -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2, ease: EASE_OUT }}
+          >
+            <Label>Nos tarifs et nos prestations</Label>
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: reduced ? 0 : 28 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.38, ease: EASE_OUT }}
+            className="mt-6 font-bold text-[#E8E2D8] leading-[0.9]"
+            style={{
+              fontFamily: 'var(--font-playfair)',
+              fontSize: 'clamp(3.2rem, 7.5vw, 7rem)',
+              minHeight: '1.9em',
+            }}
+          >
+            <Typewriter
+              words={['Spectacle de drones', 'Féerie dans le ciel', 'Made in France']}
+              typingSpeed={70}
+              deletingSpeed={35}
+              pauseDuration={2400}
+            />
+          </motion.h1>
+
+          <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 2 }}
-            className="absolute bottom-10 left-10 lg:left-20 flex items-center gap-3 z-10"
+            transition={{ duration: 0.6, delay: 0.75, ease: EASE_OUT }}
+            className="mt-7 text-[15px] text-[#E8E2D8]/30 italic tracking-wide max-w-md"
+            style={{ fontFamily: 'var(--font-playfair)' }}
           >
-            <div className="w-8 h-px bg-[#9E8060]" />
-            <span className="text-[#E8E2D8]/20 text-[9px] tracking-[0.4em] uppercase">Défiler</span>
+            Combinez féérie et technologie
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: reduced ? 0 : 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 1.0, ease: EASE_OUT }}
+            className="mt-10 flex flex-col sm:flex-row gap-3"
+          >
+            <Press
+              href="#contact"
+              className="group inline-flex items-center gap-2.5 bg-[#E8E2D8] text-[#0A0A0A] text-[10px] tracking-[0.28em] uppercase font-bold px-8 py-4 hover:bg-white transition-colors duration-150 cursor-pointer"
+            >
+              Prenons contact
+              <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform duration-150" />
+            </Press>
+            <Press
+              href="#offre"
+              className="inline-flex items-center gap-2 border border-white/[0.10] text-[#E8E2D8]/30 text-[10px] tracking-[0.28em] uppercase px-8 py-4 hover:border-white/20 hover:text-[#E8E2D8]/60 transition-all duration-150 cursor-pointer"
+            >
+              Découvrir
+            </Press>
           </motion.div>
         </div>
 
+        {/* Scroll cue */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2.2, duration: 0.6, ease: EASE_OUT }}
+          className="absolute bottom-10 left-10 lg:left-24 xl:left-36 flex items-center gap-3 z-10"
+        >
+          <div className="w-8 h-px bg-[#9E8060]/50" />
+          <span className="text-[#E8E2D8]/18 text-[8px] tracking-[0.45em] uppercase">Défiler</span>
+        </motion.div>
       </AuroraBackground>
 
-      {/* ═══ STATS ═══ */}
-      <section className="border-t border-b border-white/[0.06] bg-[#111111]">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 divide-x divide-white/[0.06]">
+      {/* ── STATS ── */}
+      <section className="border-t border-b border-white/[0.05] bg-[#0D0D0D]">
+        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 divide-x divide-white/[0.05]">
           {[
             { n: '100 – 800', label: 'drones par spectacle' },
             { n: '13 min',    label: 'durée moyenne' },
-            { n: '15 – 25',   label: 'scènes par chorégraphie' },
-            { n: '10 sem.',   label: 'de préparation' },
+            { n: '15 – 25',  label: 'scènes par chorégraphie' },
+            { n: '10 sem.',  label: 'de préparation' },
           ].map((s, i) => (
-            <FadeUp key={i} delay={i * 0.08} className="px-8 md:px-12 py-14 text-center">
+            <FadeUp key={i} delay={i * 0.06} className="px-8 md:px-14 py-16 text-center">
               <div
-                className="text-[2.2rem] md:text-[2.6rem] font-bold leading-none text-[#E8E2D8]"
+                className="text-[2.4rem] md:text-[2.8rem] font-bold leading-none text-[#E8E2D8]"
                 style={{ fontFamily: 'var(--font-playfair)' }}
               >
                 {s.n}
               </div>
-              <div className="mt-2.5 text-[#E8E2D8]/30 text-[10px] tracking-[0.3em] uppercase">
+              <div className="mt-3 text-[#E8E2D8]/28 text-[9px] tracking-[0.35em] uppercase">
                 {s.label}
               </div>
             </FadeUp>
@@ -231,70 +267,76 @@ export default function TarifsPage() {
         </div>
       </section>
 
-      {/* ═══ INTRO / TECH ═══ */}
-      <section id="offre" className="py-36 md:py-52">
+      {/* ── OFFRE ADAPTÉE — texte + drone Spline ── */}
+      <section id="offre" className="py-36 md:py-56">
         <div className="max-w-7xl mx-auto px-8">
-          <div className="grid md:grid-cols-2 gap-20 xl:gap-36 items-center">
-            <div>
+          <div className="grid md:grid-cols-2 gap-16 xl:gap-28 items-center">
+
+            <div className="max-w-xl">
               <FadeUp><Label>Notre expertise</Label></FadeUp>
-              <FadeUp delay={0.1}>
+              <FadeUp delay={0.08}>
                 <h2
-                  className="mt-4 font-bold leading-[1.04] text-[#E8E2D8]"
-                  style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(2rem, 4vw, 3.5rem)' }}
+                  className="mt-5 font-bold leading-[1.04] text-[#E8E2D8]"
+                  style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(2rem, 4vw, 3.4rem)' }}
                 >
                   Une offre adaptée<br />à tous les budgets
                 </h2>
               </FadeUp>
               <Rule />
-              <FadeUp delay={0.2}>
-                <p className="text-[#E8E2D8]/45 leading-[1.85] text-[15px]">
+              <FadeUp delay={0.12}>
+                <p className="text-[#E8E2D8]/42 leading-[1.9] text-[15px]">
                   Drone de ciel s'appuie sur des technologies de pointe pour créer des spectacles de
                   drones féériques qui sauront provoquer l'émerveillement de votre public.
                 </p>
               </FadeUp>
-              <FadeUp delay={0.3}>
-                <p className="mt-5 text-[#E8E2D8]/45 leading-[1.85] text-[15px]">
+              <FadeUp delay={0.18}>
+                <p className="mt-5 text-[#E8E2D8]/42 leading-[1.9] text-[15px]">
                   Des logiciels 3D permettent aux techniciens de Drone de ciel de concevoir des scènes
                   graphiques saisissantes et réalistes pour laisser libre court à votre imagination.
                 </p>
               </FadeUp>
-              <FadeUp delay={0.4}>
-                <p className="mt-5 text-[#E8E2D8]/45 leading-[1.85] text-[15px]">
+              <FadeUp delay={0.24}>
+                <p className="mt-5 text-[#E8E2D8]/42 leading-[1.9] text-[15px]">
                   Les drones utilisés sont équipés de leds et peuvent représenter tous les tableaux
                   souhaités.
                 </p>
               </FadeUp>
             </div>
 
-            <FadeUp delay={0.2}>
-              <div className="relative w-full" style={{ height: 'clamp(420px, 55vw, 640px)' }}>
+            {/* Drone Spline — grand et visible */}
+            <FadeUp delay={0.12}>
+              <div
+                className="relative w-full"
+                style={{ height: 'clamp(460px, 52vw, 660px)' }}
+              >
                 <SplineScene
                   scene="https://prod.spline.design/DQNn6KoBM5YFGYXD/scene.splinecode"
                   className="w-full h-full"
                 />
               </div>
             </FadeUp>
+
           </div>
         </div>
       </section>
 
-      {/* ═══ AUDIENCES ═══ */}
-      <section className="py-36 md:py-52 border-t border-white/[0.06] bg-[#111111]">
+      {/* ── AUDIENCES ── */}
+      <section className="py-36 md:py-52 border-t border-white/[0.05] bg-[#0D0D0D]">
         <div className="max-w-7xl mx-auto px-8">
           <div className="mb-20">
             <FadeUp><Label>Pour qui</Label></FadeUp>
-            <FadeUp delay={0.1}>
+            <FadeUp delay={0.08}>
               <h2
-                className="mt-4 font-bold text-[#E8E2D8] max-w-2xl"
-                style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(2rem, 4vw, 3.5rem)' }}
+                className="mt-5 font-bold text-[#E8E2D8] max-w-lg"
+                style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(2rem, 4vw, 3.4rem)' }}
               >
                 Un spectacle pour chaque occasion
               </h2>
             </FadeUp>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-10">
-            {[
+          <div className="grid md:grid-cols-3 gap-12">
+            {([
               {
                 Icon: Building2,
                 title: 'Entreprises',
@@ -313,28 +355,30 @@ export default function TarifsPage() {
                 body: 'Drone de ciel a conçu des spectacles pré-conçus pour proposer des prestations à des tarifs contenus. Notre objectif est de permettre à tous les publics de profiter de la féérie et de la magie des spectacles de drones.',
                 img: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=700&q=80&auto=format',
               },
-            ].map((card, i) => (
-              <FadeUp key={i} delay={i * 0.12}>
-                <div className="group bg-[#0A0A0A]">
-                  <div className="relative aspect-[5/4] overflow-hidden mb-7">
+            ] as const).map((card, i) => (
+              <FadeUp key={i} delay={i * 0.07}>
+                <div className="group">
+                  <div className="relative aspect-[5/4] overflow-hidden mb-8">
                     <Image
                       src={card.img}
                       alt={card.title}
                       fill
                       sizes="(max-width: 768px) 100vw, 33vw"
-                      className="object-cover group-hover:scale-[1.04] transition-transform duration-700"
+                      className="object-cover group-hover:scale-[1.03] transition-transform duration-700"
                     />
                   </div>
                   <div className="flex items-center gap-3 mb-3">
                     <card.Icon className="w-4 h-4 text-[#9E8060] shrink-0" />
                     <h3
-                      className="text-[#E8E2D8] font-semibold text-base"
+                      className="text-[#E8E2D8] font-semibold text-[15px]"
                       style={{ fontFamily: 'var(--font-playfair)' }}
                     >
                       {card.title}
                     </h3>
                   </div>
-                  <p className="text-[#E8E2D8]/35 text-sm leading-[1.8]">{card.body}</p>
+                  <p className="text-[#E8E2D8]/32 text-[13px] leading-[1.85] max-w-[52ch]">
+                    {card.body}
+                  </p>
                 </div>
               </FadeUp>
             ))}
@@ -342,12 +386,13 @@ export default function TarifsPage() {
         </div>
       </section>
 
-      {/* ═══ SUR-MESURE ═══ */}
-      <section className="py-36 md:py-52 border-t border-white/[0.06]">
+      {/* ── SUR-MESURE / VOTRE UNIVERS ── */}
+      <section className="py-36 md:py-52 border-t border-white/[0.05]">
         <div className="max-w-7xl mx-auto px-8">
-          <div className="grid md:grid-cols-2 gap-20 xl:gap-36 items-center">
+          <div className="grid md:grid-cols-2 gap-16 xl:gap-28 items-center">
 
-            <FadeUp delay={0.1} className="order-2 md:order-1">
+            {/* Image — clean, no overlapping text */}
+            <FadeUp delay={0.08} className="order-2 md:order-1">
               <div className="relative aspect-[3/4] overflow-hidden">
                 <Image
                   src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=900&q=80&auto=format"
@@ -359,80 +404,81 @@ export default function TarifsPage() {
               </div>
             </FadeUp>
 
-            <div className="order-1 md:order-2">
+            <div className="order-1 md:order-2 max-w-xl">
               <FadeUp><Label>Sur-mesure</Label></FadeUp>
-              <FadeUp delay={0.1}>
+              <FadeUp delay={0.08}>
                 <h2
-                  className="mt-4 font-bold leading-[1.04] text-[#E8E2D8]"
-                  style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(2rem, 4vw, 3.5rem)' }}
+                  className="mt-5 font-bold leading-[1.04] text-[#E8E2D8]"
+                  style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(2rem, 4vw, 3.4rem)' }}
                 >
                   Votre univers,<br />dans le ciel
                 </h2>
               </FadeUp>
               <Rule />
-              <FadeUp delay={0.2}>
-                <p className="text-[#E8E2D8]/45 leading-[1.85] text-[15px]">
+              <FadeUp delay={0.12}>
+                <p className="text-[#E8E2D8]/42 leading-[1.9] text-[15px]">
                   Chez Drone De Ciel, nous travaillons avec du matériel technologique innovant qui
                   nécessite des investissements importants ; les tarifs permettent ainsi de vous
                   garantir des spectacles de drones de haute qualité et un accompagnement de tous
                   les instants.
                 </p>
               </FadeUp>
-              <FadeUp delay={0.3}>
-                <p className="mt-5 text-[#E8E2D8]/45 leading-[1.85] text-[15px]">
+              <FadeUp delay={0.18}>
+                <p className="mt-5 text-[#E8E2D8]/42 leading-[1.9] text-[15px]">
                   Pour proposer des prix contenus, nous pouvons élaborer un spectacle personnalisé
                   sur la base de figures pré-conçues spécialement pour les évènements particuliers
                   (anniversaires, mariages, etc). Nos tarifs peuvent ainsi s'adapter à votre budget.
                 </p>
               </FadeUp>
-              <FadeUp delay={0.4}>
-                <p className="mt-5 text-[#E8E2D8]/45 leading-[1.85] text-[15px]">
+              <FadeUp delay={0.24}>
+                <p className="mt-5 text-[#E8E2D8]/42 leading-[1.9] text-[15px]">
                   Vous souhaitez transporter votre public dans votre univers, mettre en avant votre
                   marque ou votre expertise, contactez-nous pour que nous puissions étudier votre
                   demande et vous faire une offre de spectacle de drones lumineux sur-mesure.
                 </p>
               </FadeUp>
             </div>
+
           </div>
         </div>
       </section>
 
-      {/* ═══ SPECS ═══ */}
-      <section className="py-36 md:py-52 border-t border-white/[0.06] bg-[#111111]">
+      {/* ── SPECS ── */}
+      <section className="py-36 md:py-52 border-t border-white/[0.05] bg-[#0D0D0D]">
         <div className="max-w-7xl mx-auto px-8">
           <div className="mb-20">
             <FadeUp><Label>Quelques informations clés</Label></FadeUp>
-            <FadeUp delay={0.1}>
+            <FadeUp delay={0.08}>
               <h2
-                className="mt-4 font-bold text-[#E8E2D8]"
-                style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(2rem, 4vw, 3.5rem)' }}
+                className="mt-5 font-bold text-[#E8E2D8]"
+                style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(2rem, 4vw, 3.4rem)' }}
               >
                 L'excellence en chiffres
               </h2>
             </FadeUp>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-white/[0.05]">
-            {[
-              { Icon: Zap,       title: 'Chorégraphies personnalisées', body: 'Création de chorégraphies personnalisées' },
-              { Icon: BarChart3, title: '100 à 800 drones',             body: '100 à 800 drones par spectacle' },
-              { Icon: Clock,     title: '10 semaines de préparation',   body: "10 semaines de préparation (y compris les demandes d'autorisation)" },
-              { Icon: Star,      title: '15 à 25 scènes',               body: '15 à 25 scènes par chorégraphie' },
-              { Icon: Clock,     title: '13 minutes',                   body: "Durée moyenne d'un spectacle : 13 minutes" },
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-white/[0.04]">
+            {([
+              { Icon: Zap,       title: 'Chorégraphies personnalisées', body: 'Création de chorégraphies personnalisées selon vos besoins.' },
+              { Icon: BarChart3, title: '100 à 800 drones',             body: '100 à 800 drones par spectacle pour des effets à grande échelle.' },
+              { Icon: Clock,     title: '10 semaines de préparation',   body: "10 semaines de préparation, y compris les demandes d'autorisation." },
+              { Icon: Star,      title: '15 à 25 scènes',               body: '15 à 25 scènes par chorégraphie pour un spectacle complet.' },
+              { Icon: Clock,     title: '13 minutes',                   body: "Durée moyenne d'un spectacle : 13 minutes d'émerveillement." },
               { Icon: Flame,     title: "Zéro risque d'incendie",       body: "La technologie employée permet d'écarter tout risque d'incendie." },
-              { Icon: Repeat,    title: 'Spectacle répétable',          body: 'Le spectacle peut être répété plusieurs fois' },
+              { Icon: Repeat,    title: 'Spectacle répétable',          body: 'Le spectacle peut être répété plusieurs fois sans contrainte.' },
               { Icon: Leaf,      title: 'Éco-responsable',              body: 'Les drones sont réutilisables, sans émission et recyclables.' },
-            ].map((item, i) => (
-              <FadeUp key={i} delay={i * 0.05}>
-                <div className="group bg-[#111111] px-8 py-10 hover:bg-[#181818] transition-colors duration-300 h-full">
-                  <item.Icon className="w-5 h-5 text-[#9E8060] mb-7" />
+            ] as const).map((item, i) => (
+              <FadeUp key={i} delay={i * 0.04}>
+                <div className="group bg-[#0D0D0D] px-8 py-10 hover:bg-[#141414] transition-colors duration-200 h-full">
+                  <item.Icon className="w-4 h-4 text-[#9E8060] mb-8" strokeWidth={1.5} />
                   <h3
-                    className="text-[#E8E2D8] font-semibold text-sm mb-2"
+                    className="text-[#E8E2D8] font-semibold text-[13px] mb-3"
                     style={{ fontFamily: 'var(--font-playfair)' }}
                   >
                     {item.title}
                   </h3>
-                  <p className="text-[#E8E2D8]/30 text-xs leading-relaxed">{item.body}</p>
+                  <p className="text-[#E8E2D8]/28 text-[12px] leading-[1.75]">{item.body}</p>
                 </div>
               </FadeUp>
             ))}
@@ -440,102 +486,102 @@ export default function TarifsPage() {
         </div>
       </section>
 
-      {/* ═══ QUOTE ═══ */}
-      <section className="py-36 md:py-48 border-t border-white/[0.06]">
-        <div className="max-w-4xl mx-auto px-8 text-center">
+      {/* ── QUOTE ── */}
+      <section className="py-36 md:py-52 border-t border-white/[0.05]">
+        <div className="max-w-3xl mx-auto px-8 text-center">
           <FadeUp>
             <div
-              className="text-[#9E8060] text-6xl leading-none mb-8 select-none"
+              className="text-[#9E8060]/70 text-7xl leading-none mb-10 select-none"
               style={{ fontFamily: 'var(--font-playfair)' }}
             >
               &ldquo;
             </div>
             <blockquote
-              className="text-2xl md:text-[2rem] font-bold italic leading-[1.45] text-[#E8E2D8]/60"
+              className="text-[1.6rem] md:text-[2rem] font-bold italic leading-[1.5] text-[#E8E2D8]/55"
               style={{ fontFamily: 'var(--font-playfair)' }}
             >
               Notre objectif est de permettre à tous les publics de profiter de la
               féérie et de la magie des spectacles de drones.
             </blockquote>
-            <div className="mt-10 flex items-center justify-center gap-5">
-              <div className="h-px w-12 bg-[#9E8060]" />
-              <span className="text-[#9E8060] text-[10px] tracking-[0.35em] uppercase">
+            <div className="mt-12 flex items-center justify-center gap-6">
+              <div className="h-px w-10 bg-[#9E8060]/50" />
+              <span className="text-[#9E8060] text-[9px] tracking-[0.4em] uppercase">
                 Drone de Ciel
               </span>
-              <div className="h-px w-12 bg-[#9E8060]" />
+              <div className="h-px w-10 bg-[#9E8060]/50" />
             </div>
           </FadeUp>
         </div>
       </section>
 
-      {/* ═══ CTA ═══ */}
-      <section id="contact" className="py-36 md:py-52 border-t border-white/[0.06] bg-[#111111]">
+      {/* ── CTA ── */}
+      <section id="contact" className="py-36 md:py-52 border-t border-white/[0.05] bg-[#0D0D0D]">
         <div className="max-w-7xl mx-auto px-8">
           <div className="grid md:grid-cols-2 gap-20 items-center">
-            <div>
+            <div className="max-w-xl">
               <FadeUp><Label>Passons à l'action</Label></FadeUp>
-              <FadeUp delay={0.1}>
+              <FadeUp delay={0.08}>
                 <h2
-                  className="mt-4 font-bold leading-[1.02] text-[#E8E2D8]"
-                  style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(2.5rem, 5vw, 4.5rem)' }}
+                  className="mt-5 font-bold leading-[1.02] text-[#E8E2D8]"
+                  style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(2.4rem, 5vw, 4.2rem)' }}
                 >
                   Faites briller votre évènement avec un spectacle de drones
                 </h2>
               </FadeUp>
               <Rule />
-              <FadeUp delay={0.2}>
-                <p className="text-[#E8E2D8]/35 leading-[1.85]">
+              <FadeUp delay={0.12}>
+                <p className="text-[#E8E2D8]/32 leading-[1.9] text-[15px] max-w-[55ch]">
                   Contactez-nous pour étudier votre demande et vous faire une offre sur-mesure.
                 </p>
               </FadeUp>
             </div>
 
-            <FadeUp delay={0.2} className="flex flex-col gap-4">
-              <a
+            <FadeUp delay={0.1} className="flex flex-col gap-4">
+              <Press
                 href="mailto:contact@dronedeciel.com"
-                className="group inline-flex items-center gap-3 bg-[#E8E2D8] text-[#0A0A0A] font-bold text-[11px] tracking-[0.25em] uppercase px-8 py-5 hover:bg-white transition-colors duration-300"
+                className="group inline-flex items-center gap-3 bg-[#E8E2D8] text-[#0A0A0A] font-bold text-[10px] tracking-[0.28em] uppercase px-8 py-5 hover:bg-white transition-colors duration-150 cursor-pointer"
               >
                 Prenons contact
-                <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-              </a>
-              <a
+                <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-150" />
+              </Press>
+              <Press
                 href="tel:+33629586558"
-                className="inline-flex items-center gap-3 border border-white/[0.12] text-[#E8E2D8]/40 text-[11px] tracking-[0.25em] uppercase px-8 py-5 hover:border-white/25 hover:text-[#E8E2D8]/70 transition-all duration-300"
+                className="inline-flex items-center gap-3 border border-white/[0.10] text-[#E8E2D8]/38 text-[10px] tracking-[0.28em] uppercase px-8 py-5 hover:border-white/20 hover:text-[#E8E2D8]/65 transition-all duration-150 cursor-pointer"
               >
-                <Phone className="w-4 h-4" />
+                <Phone className="w-4 h-4" strokeWidth={1.5} />
                 +33 (0)6 29 58 65 58
-              </a>
+              </Press>
             </FadeUp>
           </div>
         </div>
       </section>
 
-      {/* ═══ FOOTER ═══ */}
-      <footer className="border-t border-white/[0.06] bg-[#080808] pt-16 pb-8">
+      {/* ── FOOTER ── */}
+      <footer className="border-t border-white/[0.05] bg-[#070707] pt-16 pb-10">
         <div className="max-w-7xl mx-auto px-8">
-          <div className="grid md:grid-cols-4 gap-12 mb-14">
+          <div className="grid md:grid-cols-4 gap-14 mb-16">
 
             <div>
               <p
-                className="text-[11px] font-bold tracking-[0.2em] uppercase mb-5 text-[#E8E2D8]"
+                className="text-[10px] font-bold tracking-[0.25em] uppercase mb-6 text-[#E8E2D8]"
                 style={{ fontFamily: 'var(--font-playfair)' }}
               >
                 Drone de Ciel{' '}
-                <span className="text-[#9E8060]">|</span>{' '}
+                <span className="text-[#9E8060]">·</span>{' '}
                 <span className="text-[#E8E2D8]/25 font-normal">Made In France</span>
               </p>
-              <p className="text-[#E8E2D8]/25 text-xs leading-relaxed">
+              <p className="text-[#E8E2D8]/22 text-[12px] leading-[1.8] max-w-[36ch]">
                 Spectacles de drones féériques alliant technologie de pointe et magie visuelle,
                 pour tous vos évènements.
               </p>
             </div>
 
             <div>
-              <p className="text-[#E8E2D8]/25 text-[10px] tracking-[0.3em] uppercase mb-5">Navigation</p>
-              <ul className="space-y-3">
+              <p className="text-[#E8E2D8]/22 text-[9px] tracking-[0.38em] uppercase mb-6">Navigation</p>
+              <ul className="space-y-3.5">
                 {["L'équipe", 'Vidéos', 'Prenons contact', 'Ils parlent de nous', 'FAQ'].map((l) => (
                   <li key={l}>
-                    <a href="#" className="text-[#E8E2D8]/25 text-sm hover:text-[#E8E2D8]/60 transition-colors duration-200">
+                    <a href="#" className="text-[#E8E2D8]/22 text-[13px] hover:text-[#E8E2D8]/55 transition-colors duration-150">
                       {l}
                     </a>
                   </li>
@@ -544,7 +590,7 @@ export default function TarifsPage() {
             </div>
 
             <div>
-              <p className="text-[#E8E2D8]/25 text-[10px] tracking-[0.3em] uppercase mb-5">Contact</p>
+              <p className="text-[#E8E2D8]/22 text-[9px] tracking-[0.38em] uppercase mb-6">Contact</p>
               <ul className="space-y-4">
                 {[
                   { Icon: Phone,  text: '+33 (0)6 29 58 65 58',               href: 'tel:+33629586558' },
@@ -552,8 +598,8 @@ export default function TarifsPage() {
                   { Icon: MapPin, text: '23 Route de Ternant\n01500 AMBUTRIX, France', href: '#' },
                 ].map(({ Icon, text, href }, i) => (
                   <li key={i}>
-                    <a href={href} className="flex items-start gap-3 text-[#E8E2D8]/25 text-sm hover:text-[#E8E2D8]/50 transition-colors">
-                      <Icon className="w-4 h-4 text-[#9E8060]/50 mt-0.5 shrink-0" />
+                    <a href={href} className="flex items-start gap-3 text-[#E8E2D8]/22 text-[13px] hover:text-[#E8E2D8]/50 transition-colors duration-150">
+                      <Icon className="w-4 h-4 text-[#9E8060]/45 mt-0.5 shrink-0" strokeWidth={1.5} />
                       <span className="whitespace-pre-line">{text}</span>
                     </a>
                   </li>
@@ -562,26 +608,27 @@ export default function TarifsPage() {
             </div>
 
             <div>
-              <p className="text-[#E8E2D8]/25 text-[10px] tracking-[0.3em] uppercase mb-5">Suivez-nous</p>
-              <div className="flex gap-3">
+              <p className="text-[#E8E2D8]/22 text-[9px] tracking-[0.38em] uppercase mb-6">Suivez-nous</p>
+              <div className="flex gap-2.5">
                 {[IconInstagram, IconFacebook, IconLinkedin, IconYoutube].map((Icon, i) => (
-                  <a
+                  <motion.a
                     key={i}
                     href="#"
-                    className="w-9 h-9 border border-white/[0.08] flex items-center justify-center text-[#E8E2D8]/20 hover:border-white/20 hover:text-[#E8E2D8]/50 transition-all duration-300"
+                    whileTap={reduced ? {} : { scale: 0.92 }}
+                    transition={{ duration: 0.12, ease: EASE_OUT_FAST }}
+                    className="w-9 h-9 border border-white/[0.07] flex items-center justify-center text-[#E8E2D8]/18 hover:border-white/15 hover:text-[#E8E2D8]/45 transition-all duration-150 cursor-pointer"
                   >
                     <Icon />
-                  </a>
+                  </motion.a>
                 ))}
               </div>
             </div>
           </div>
 
-          <div className="h-px bg-white/[0.05]" />
-
+          <div className="h-px bg-white/[0.04]" />
           <div className="mt-8 flex flex-col md:flex-row items-center justify-between gap-3">
-            <p className="text-[#E8E2D8]/15 text-[11px] tracking-wide">© 2026 DRONE DE CIEL | Made In France</p>
-            <p className="text-[#E8E2D8]/15 text-[11px] tracking-wide">www.dronedeciel.show</p>
+            <p className="text-[#E8E2D8]/14 text-[10px] tracking-wide">© 2026 DRONE DE CIEL · Made In France</p>
+            <p className="text-[#E8E2D8]/14 text-[10px] tracking-wide">www.dronedeciel.show</p>
           </div>
         </div>
       </footer>
