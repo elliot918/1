@@ -30,7 +30,7 @@ class SplineErrorBoundary extends Component<
 /* Premium drone SVG — shown while Spline loads or if it fails */
 const SceneFallback = ({ className }: { className?: string }) => (
   <div
-    className={`${className ?? ''} flex items-center justify-center bg-[#F2EDE5]`}
+    className={`${className ?? ''} flex items-center justify-center bg-transparent`}
   >
     <svg
       viewBox="0 0 320 280"

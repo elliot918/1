@@ -39,81 +39,6 @@ const IconYoutube = () => (
   </svg>
 )
 
-/* ── Animated SVG drone — premium technical illustration ── */
-function DroneIllustration() {
-  return (
-    <div className="w-full h-full flex items-center justify-center bg-[#F2EDE5]">
-      <motion.div
-        animate={{ y: [0, -14, 0] }}
-        transition={{ duration: 4, ease: 'easeInOut', repeat: Infinity }}
-        className="relative"
-      >
-        <svg
-          viewBox="0 0 320 280"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="w-[320px] h-[280px] md:w-[400px] md:h-[350px]"
-        >
-          {/* Shadow beneath */}
-          <motion.ellipse
-            cx="160" cy="260" rx="60" ry="8"
-            fill="#1A1917"
-            animate={{ opacity: [0.07, 0.04, 0.07], rx: [60, 52, 60] }}
-            transition={{ duration: 4, ease: 'easeInOut', repeat: Infinity }}
-          />
-
-          {/* Arms */}
-          <line x1="160" y1="130" x2="60"  y2="72"  stroke="#1A1917" strokeWidth="3" strokeLinecap="round" />
-          <line x1="160" y1="130" x2="260" y2="72"  stroke="#1A1917" strokeWidth="3" strokeLinecap="round" />
-          <line x1="160" y1="150" x2="60"  y2="208" stroke="#1A1917" strokeWidth="3" strokeLinecap="round" />
-          <line x1="160" y1="150" x2="260" y2="208" stroke="#1A1917" strokeWidth="3" strokeLinecap="round" />
-
-          {/* Motor housings */}
-          {[[60,72],[260,72],[60,208],[260,208]].map(([cx,cy], i) => (
-            <g key={i}>
-              <circle cx={cx} cy={cy} r="20" fill="#F8F5F0" stroke="#1A1917" strokeWidth="1.5" />
-              <circle cx={cx} cy={cy} r="5"  fill="#9E8060" />
-            </g>
-          ))}
-
-          {/* Propellers */}
-          {[[60,72],[260,72],[60,208],[260,208]].map(([cx,cy], i) => (
-            <motion.g
-              key={`prop-${i}`}
-              style={{ originX: `${cx}px`, originY: `${cy}px` }}
-              animate={{ rotate: i % 2 === 0 ? 360 : -360 }}
-              transition={{ duration: 0.6, ease: 'linear', repeat: Infinity }}
-            >
-              <ellipse cx={cx} cy={cy} rx="26" ry="5" fill="#1A1917" fillOpacity="0.12" />
-              <ellipse
-                cx={cx} cy={cy} rx="5" ry="26"
-                fill="#1A1917" fillOpacity="0.12"
-                transform={`rotate(90 ${cx} ${cy})`}
-              />
-            </motion.g>
-          ))}
-
-          {/* Body */}
-          <rect x="136" y="116" width="48" height="48" rx="6" fill="#1A1917" />
-          <rect x="142" y="122" width="36" height="36" rx="4" fill="#F8F5F0" fillOpacity="0.06" />
-
-          {/* Camera gimbal */}
-          <circle cx="160" cy="168" r="10" fill="#2A2926" />
-          <circle cx="160" cy="168" r="5"  fill="#1A1917" />
-          <circle cx="160" cy="168" r="2"  fill="#9E8060" />
-
-          {/* LED indicator */}
-          <motion.circle
-            cx="160" cy="130" r="3" fill="#9E8060"
-            animate={{ opacity: [1, 0.2, 1] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-          />
-        </svg>
-      </motion.div>
-    </div>
-  )
-}
-
 /* ── Animation helpers ── */
 const EASE = [0.25, 0.46, 0.45, 0.94] as const
 
@@ -161,20 +86,20 @@ function Rule() {
 export default function TarifsPage() {
   return (
     <div
-      className="min-h-screen bg-[#F8F5F0] text-[#1A1917] overflow-x-hidden"
+      className="min-h-screen bg-[#0A0A0A] text-[#E8E2D8] overflow-x-hidden"
       style={{ fontFamily: 'var(--font-inter)' }}
     >
 
       {/* ═══ NAV ═══ */}
-      <nav className="fixed top-0 inset-x-0 z-50 bg-[#F8F5F0]/90 backdrop-blur-xl border-b border-[#1A1917]/[0.07]">
+      <nav className="fixed top-0 inset-x-0 z-50 bg-[#0A0A0A]/90 backdrop-blur-xl border-b border-white/[0.06]">
         <div className="max-w-7xl mx-auto px-8 h-16 flex items-center justify-between">
           <span
-            className="text-[11px] font-bold tracking-[0.22em] uppercase text-[#1A1917]"
+            className="text-[11px] font-bold tracking-[0.22em] uppercase text-[#E8E2D8]"
             style={{ fontFamily: 'var(--font-playfair)' }}
           >
             Drone de Ciel{' '}
             <span className="text-[#9E8060]">|</span>{' '}
-            <span className="text-[#1A1917]/40 font-normal">Made In France</span>
+            <span className="text-[#E8E2D8]/35 font-normal">Made In France</span>
           </span>
 
           <div className="hidden md:flex items-center gap-10">
@@ -182,20 +107,20 @@ export default function TarifsPage() {
               <a
                 key={l}
                 href="#"
-                className="text-[#1A1917]/40 text-[11px] tracking-[0.2em] uppercase hover:text-[#1A1917] transition-colors duration-200"
+                className="text-[#E8E2D8]/35 text-[11px] tracking-[0.2em] uppercase hover:text-[#E8E2D8] transition-colors duration-200"
               >
                 {l}
               </a>
             ))}
             <a
               href="#contact"
-              className="border border-[#1A1917]/30 text-[#1A1917]/60 text-[11px] tracking-[0.2em] uppercase px-5 py-2.5 hover:bg-[#1A1917] hover:text-[#F8F5F0] transition-all duration-300"
+              className="border border-white/20 text-[#E8E2D8]/60 text-[11px] tracking-[0.2em] uppercase px-5 py-2.5 hover:bg-white hover:text-[#0A0A0A] transition-all duration-300"
             >
               Prenons contact
             </a>
           </div>
 
-          <button className="md:hidden text-[#1A1917]/40 hover:text-[#1A1917]">
+          <button className="md:hidden text-[#E8E2D8]/40 hover:text-[#E8E2D8]">
             <Menu className="w-5 h-5" />
           </button>
         </div>
@@ -208,7 +133,7 @@ export default function TarifsPage() {
         <div className="w-full md:w-1/2 flex flex-col justify-center px-10 lg:px-20 pt-16 relative">
 
           {/* Shader subtle overlay */}
-          <ShaderAnimation className="absolute inset-0 opacity-60 pointer-events-none" />
+          <ShaderAnimation className="absolute inset-0 opacity-50 pointer-events-none" />
 
           {/* Content */}
           <div className="relative z-10">
@@ -224,7 +149,7 @@ export default function TarifsPage() {
               initial={{ opacity: 0, y: 32 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.05, delay: 0.45, ease: EASE }}
-              className="mt-5 font-bold leading-[0.88] text-[#1A1917]"
+              className="mt-5 font-bold leading-[0.88] text-[#E8E2D8]"
               style={{
                 fontFamily: 'var(--font-playfair)',
                 fontSize: 'clamp(2.8rem, 6vw, 5.5rem)',
@@ -240,7 +165,7 @@ export default function TarifsPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.9, delay: 0.85 }}
-              className="mt-6 text-[15px] text-[#1A1917]/40 italic tracking-wide"
+              className="mt-6 text-[15px] text-[#E8E2D8]/35 italic tracking-wide"
               style={{ fontFamily: 'var(--font-playfair)' }}
             >
               Combinez féérie et technologie
@@ -254,14 +179,14 @@ export default function TarifsPage() {
             >
               <a
                 href="#contact"
-                className="group inline-flex items-center gap-2 bg-[#1A1917] text-[#F8F5F0] text-[11px] tracking-[0.25em] uppercase font-bold px-8 py-4 hover:bg-[#2A2926] transition-colors duration-300"
+                className="group inline-flex items-center gap-2 bg-[#E8E2D8] text-[#0A0A0A] text-[11px] tracking-[0.25em] uppercase font-bold px-8 py-4 hover:bg-white transition-colors duration-300"
               >
                 Prenons contact
                 <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
               </a>
               <a
                 href="#offre"
-                className="inline-flex items-center gap-2 border border-[#1A1917]/[0.15] text-[#1A1917]/40 text-[11px] tracking-[0.25em] uppercase px-8 py-4 hover:border-[#1A1917]/30 hover:text-[#1A1917]/70 transition-all duration-300"
+                className="inline-flex items-center gap-2 border border-white/[0.12] text-[#E8E2D8]/35 text-[11px] tracking-[0.25em] uppercase px-8 py-4 hover:border-white/25 hover:text-[#E8E2D8]/70 transition-all duration-300"
               >
                 Découvrir
               </a>
@@ -276,13 +201,13 @@ export default function TarifsPage() {
             className="absolute bottom-10 left-10 lg:left-20 flex items-center gap-3 z-10"
           >
             <div className="w-8 h-px bg-[#9E8060]" />
-            <span className="text-[#1A1917]/25 text-[9px] tracking-[0.4em] uppercase">Défiler</span>
+            <span className="text-[#E8E2D8]/20 text-[9px] tracking-[0.4em] uppercase">Défiler</span>
           </motion.div>
         </div>
 
-        {/* Right: Spline 3D drone */}
-        <div className="hidden md:flex md:w-1/2 relative items-center justify-center overflow-hidden">
-          <div className="absolute left-0 top-0 bottom-0 w-px bg-[#1A1917]/[0.06]" />
+        {/* Right: Spline 3D drone — full half, transparent bg */}
+        <div className="hidden md:flex md:w-1/2 relative items-stretch overflow-hidden">
+          <div className="absolute left-0 top-0 bottom-0 w-px bg-white/[0.05]" />
           <SplineScene
             scene="https://prod.spline.design/DQNn6KoBM5YFGYXD/scene.splinecode"
             className="w-full h-full"
@@ -292,8 +217,8 @@ export default function TarifsPage() {
       </AuroraBackground>
 
       {/* ═══ STATS ═══ */}
-      <section className="border-t border-b border-[#1A1917]/[0.07] bg-[#F2EDE5]">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 divide-x divide-[#1A1917]/[0.07]">
+      <section className="border-t border-b border-white/[0.06] bg-[#111111]">
+        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 divide-x divide-white/[0.06]">
           {[
             { n: '100 – 800', label: 'drones par spectacle' },
             { n: '13 min',    label: 'durée moyenne' },
@@ -302,12 +227,12 @@ export default function TarifsPage() {
           ].map((s, i) => (
             <FadeUp key={i} delay={i * 0.08} className="px-8 md:px-12 py-14 text-center">
               <div
-                className="text-[2.2rem] md:text-[2.6rem] font-bold leading-none text-[#1A1917]"
+                className="text-[2.2rem] md:text-[2.6rem] font-bold leading-none text-[#E8E2D8]"
                 style={{ fontFamily: 'var(--font-playfair)' }}
               >
                 {s.n}
               </div>
-              <div className="mt-2.5 text-[#1A1917]/35 text-[10px] tracking-[0.3em] uppercase">
+              <div className="mt-2.5 text-[#E8E2D8]/30 text-[10px] tracking-[0.3em] uppercase">
                 {s.label}
               </div>
             </FadeUp>
@@ -323,7 +248,7 @@ export default function TarifsPage() {
               <FadeUp><Label>Notre expertise</Label></FadeUp>
               <FadeUp delay={0.1}>
                 <h2
-                  className="mt-4 font-bold leading-[1.04] text-[#1A1917]"
+                  className="mt-4 font-bold leading-[1.04] text-[#E8E2D8]"
                   style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(2rem, 4vw, 3.5rem)' }}
                 >
                   Une offre adaptée<br />à tous les budgets
@@ -331,19 +256,19 @@ export default function TarifsPage() {
               </FadeUp>
               <Rule />
               <FadeUp delay={0.2}>
-                <p className="text-[#1A1917]/55 leading-[1.85] text-[15px]">
+                <p className="text-[#E8E2D8]/45 leading-[1.85] text-[15px]">
                   Drone de ciel s'appuie sur des technologies de pointe pour créer des spectacles de
                   drones féériques qui sauront provoquer l'émerveillement de votre public.
                 </p>
               </FadeUp>
               <FadeUp delay={0.3}>
-                <p className="mt-5 text-[#1A1917]/55 leading-[1.85] text-[15px]">
+                <p className="mt-5 text-[#E8E2D8]/45 leading-[1.85] text-[15px]">
                   Des logiciels 3D permettent aux techniciens de Drone de ciel de concevoir des scènes
                   graphiques saisissantes et réalistes pour laisser libre court à votre imagination.
                 </p>
               </FadeUp>
               <FadeUp delay={0.4}>
-                <p className="mt-5 text-[#1A1917]/55 leading-[1.85] text-[15px]">
+                <p className="mt-5 text-[#E8E2D8]/45 leading-[1.85] text-[15px]">
                   Les drones utilisés sont équipés de leds et peuvent représenter tous les tableaux
                   souhaités.
                 </p>
@@ -356,6 +281,7 @@ export default function TarifsPage() {
                   src="https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=900&q=80&auto=format"
                   alt="Drone professionnel en vol"
                   fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover hover:scale-[1.03] transition-transform duration-700"
                 />
               </div>
@@ -365,13 +291,13 @@ export default function TarifsPage() {
       </section>
 
       {/* ═══ AUDIENCES ═══ */}
-      <section className="py-36 md:py-52 border-t border-[#1A1917]/[0.07] bg-[#F2EDE5]">
+      <section className="py-36 md:py-52 border-t border-white/[0.06] bg-[#111111]">
         <div className="max-w-7xl mx-auto px-8">
           <div className="mb-20">
             <FadeUp><Label>Pour qui</Label></FadeUp>
             <FadeUp delay={0.1}>
               <h2
-                className="mt-4 font-bold text-[#1A1917] max-w-2xl"
+                className="mt-4 font-bold text-[#E8E2D8] max-w-2xl"
                 style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(2rem, 4vw, 3.5rem)' }}
               >
                 Un spectacle pour chaque occasion
@@ -401,25 +327,26 @@ export default function TarifsPage() {
               },
             ].map((card, i) => (
               <FadeUp key={i} delay={i * 0.12}>
-                <div className="group bg-[#F8F5F0]">
+                <div className="group bg-[#0A0A0A]">
                   <div className="relative aspect-[5/4] overflow-hidden mb-7">
                     <Image
                       src={card.img}
                       alt={card.title}
                       fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
                       className="object-cover group-hover:scale-[1.04] transition-transform duration-700"
                     />
                   </div>
                   <div className="flex items-center gap-3 mb-3">
                     <card.Icon className="w-4 h-4 text-[#9E8060] shrink-0" />
                     <h3
-                      className="text-[#1A1917] font-semibold text-base"
+                      className="text-[#E8E2D8] font-semibold text-base"
                       style={{ fontFamily: 'var(--font-playfair)' }}
                     >
                       {card.title}
                     </h3>
                   </div>
-                  <p className="text-[#1A1917]/45 text-sm leading-[1.8]">{card.body}</p>
+                  <p className="text-[#E8E2D8]/35 text-sm leading-[1.8]">{card.body}</p>
                 </div>
               </FadeUp>
             ))}
@@ -428,7 +355,7 @@ export default function TarifsPage() {
       </section>
 
       {/* ═══ SUR-MESURE ═══ */}
-      <section className="py-36 md:py-52 border-t border-[#1A1917]/[0.07]">
+      <section className="py-36 md:py-52 border-t border-white/[0.06]">
         <div className="max-w-7xl mx-auto px-8">
           <div className="grid md:grid-cols-2 gap-20 xl:gap-36 items-center">
 
@@ -438,6 +365,7 @@ export default function TarifsPage() {
                   src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=900&q=80&auto=format"
                   alt="Vue aérienne de nuit"
                   fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover hover:scale-[1.03] transition-transform duration-700"
                 />
               </div>
@@ -447,7 +375,7 @@ export default function TarifsPage() {
               <FadeUp><Label>Sur-mesure</Label></FadeUp>
               <FadeUp delay={0.1}>
                 <h2
-                  className="mt-4 font-bold leading-[1.04] text-[#1A1917]"
+                  className="mt-4 font-bold leading-[1.04] text-[#E8E2D8]"
                   style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(2rem, 4vw, 3.5rem)' }}
                 >
                   Votre univers,<br />dans le ciel
@@ -455,7 +383,7 @@ export default function TarifsPage() {
               </FadeUp>
               <Rule />
               <FadeUp delay={0.2}>
-                <p className="text-[#1A1917]/55 leading-[1.85] text-[15px]">
+                <p className="text-[#E8E2D8]/45 leading-[1.85] text-[15px]">
                   Chez Drone De Ciel, nous travaillons avec du matériel technologique innovant qui
                   nécessite des investissements importants ; les tarifs permettent ainsi de vous
                   garantir des spectacles de drones de haute qualité et un accompagnement de tous
@@ -463,14 +391,14 @@ export default function TarifsPage() {
                 </p>
               </FadeUp>
               <FadeUp delay={0.3}>
-                <p className="mt-5 text-[#1A1917]/55 leading-[1.85] text-[15px]">
+                <p className="mt-5 text-[#E8E2D8]/45 leading-[1.85] text-[15px]">
                   Pour proposer des prix contenus, nous pouvons élaborer un spectacle personnalisé
                   sur la base de figures pré-conçues spécialement pour les évènements particuliers
                   (anniversaires, mariages, etc). Nos tarifs peuvent ainsi s'adapter à votre budget.
                 </p>
               </FadeUp>
               <FadeUp delay={0.4}>
-                <p className="mt-5 text-[#1A1917]/55 leading-[1.85] text-[15px]">
+                <p className="mt-5 text-[#E8E2D8]/45 leading-[1.85] text-[15px]">
                   Vous souhaitez transporter votre public dans votre univers, mettre en avant votre
                   marque ou votre expertise, contactez-nous pour que nous puissions étudier votre
                   demande et vous faire une offre de spectacle de drones lumineux sur-mesure.
@@ -482,13 +410,13 @@ export default function TarifsPage() {
       </section>
 
       {/* ═══ SPECS ═══ */}
-      <section className="py-36 md:py-52 border-t border-[#1A1917]/[0.07] bg-[#F2EDE5]">
+      <section className="py-36 md:py-52 border-t border-white/[0.06] bg-[#111111]">
         <div className="max-w-7xl mx-auto px-8">
           <div className="mb-20">
             <FadeUp><Label>Quelques informations clés</Label></FadeUp>
             <FadeUp delay={0.1}>
               <h2
-                className="mt-4 font-bold text-[#1A1917]"
+                className="mt-4 font-bold text-[#E8E2D8]"
                 style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(2rem, 4vw, 3.5rem)' }}
               >
                 L'excellence en chiffres
@@ -496,27 +424,27 @@ export default function TarifsPage() {
             </FadeUp>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-[#1A1917]/[0.07]">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-white/[0.05]">
             {[
-              { Icon: Zap,      title: 'Chorégraphies personnalisées', body: 'Création de chorégraphies personnalisées' },
-              { Icon: BarChart3, title: '100 à 800 drones',            body: '100 à 800 drones par spectacle' },
-              { Icon: Clock,    title: '10 semaines de préparation',   body: "10 semaines de préparation (y compris les demandes d'autorisation)" },
-              { Icon: Star,     title: '15 à 25 scènes',               body: '15 à 25 scènes par chorégraphie' },
-              { Icon: Clock,    title: '13 minutes',                   body: "Durée moyenne d'un spectacle : 13 minutes" },
-              { Icon: Flame,    title: "Zéro risque d'incendie",       body: "La technologie employée permet d'écarter tout risque d'incendie." },
-              { Icon: Repeat,   title: 'Spectacle répétable',          body: 'Le spectacle peut être répété plusieurs fois' },
-              { Icon: Leaf,     title: 'Éco-responsable',              body: 'Les drones sont réutilisables, sans émission et recyclables.' },
+              { Icon: Zap,       title: 'Chorégraphies personnalisées', body: 'Création de chorégraphies personnalisées' },
+              { Icon: BarChart3, title: '100 à 800 drones',             body: '100 à 800 drones par spectacle' },
+              { Icon: Clock,     title: '10 semaines de préparation',   body: "10 semaines de préparation (y compris les demandes d'autorisation)" },
+              { Icon: Star,      title: '15 à 25 scènes',               body: '15 à 25 scènes par chorégraphie' },
+              { Icon: Clock,     title: '13 minutes',                   body: "Durée moyenne d'un spectacle : 13 minutes" },
+              { Icon: Flame,     title: "Zéro risque d'incendie",       body: "La technologie employée permet d'écarter tout risque d'incendie." },
+              { Icon: Repeat,    title: 'Spectacle répétable',          body: 'Le spectacle peut être répété plusieurs fois' },
+              { Icon: Leaf,      title: 'Éco-responsable',              body: 'Les drones sont réutilisables, sans émission et recyclables.' },
             ].map((item, i) => (
               <FadeUp key={i} delay={i * 0.05}>
-                <div className="group bg-[#F2EDE5] px-8 py-10 hover:bg-[#EDE7DE] transition-colors duration-300 h-full">
+                <div className="group bg-[#111111] px-8 py-10 hover:bg-[#181818] transition-colors duration-300 h-full">
                   <item.Icon className="w-5 h-5 text-[#9E8060] mb-7" />
                   <h3
-                    className="text-[#1A1917] font-semibold text-sm mb-2"
+                    className="text-[#E8E2D8] font-semibold text-sm mb-2"
                     style={{ fontFamily: 'var(--font-playfair)' }}
                   >
                     {item.title}
                   </h3>
-                  <p className="text-[#1A1917]/35 text-xs leading-relaxed">{item.body}</p>
+                  <p className="text-[#E8E2D8]/30 text-xs leading-relaxed">{item.body}</p>
                 </div>
               </FadeUp>
             ))}
@@ -525,7 +453,7 @@ export default function TarifsPage() {
       </section>
 
       {/* ═══ QUOTE ═══ */}
-      <section className="py-36 md:py-48 border-t border-[#1A1917]/[0.07]">
+      <section className="py-36 md:py-48 border-t border-white/[0.06]">
         <div className="max-w-4xl mx-auto px-8 text-center">
           <FadeUp>
             <div
@@ -535,7 +463,7 @@ export default function TarifsPage() {
               &ldquo;
             </div>
             <blockquote
-              className="text-2xl md:text-[2rem] font-bold italic leading-[1.45] text-[#1A1917]/70"
+              className="text-2xl md:text-[2rem] font-bold italic leading-[1.45] text-[#E8E2D8]/60"
               style={{ fontFamily: 'var(--font-playfair)' }}
             >
               Notre objectif est de permettre à tous les publics de profiter de la
@@ -553,14 +481,14 @@ export default function TarifsPage() {
       </section>
 
       {/* ═══ CTA ═══ */}
-      <section id="contact" className="py-36 md:py-52 border-t border-[#1A1917]/[0.07] bg-[#F2EDE5]">
+      <section id="contact" className="py-36 md:py-52 border-t border-white/[0.06] bg-[#111111]">
         <div className="max-w-7xl mx-auto px-8">
           <div className="grid md:grid-cols-2 gap-20 items-center">
             <div>
               <FadeUp><Label>Passons à l'action</Label></FadeUp>
               <FadeUp delay={0.1}>
                 <h2
-                  className="mt-4 font-bold leading-[1.02] text-[#1A1917]"
+                  className="mt-4 font-bold leading-[1.02] text-[#E8E2D8]"
                   style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(2.5rem, 5vw, 4.5rem)' }}
                 >
                   Faites briller votre évènement avec un spectacle de drones
@@ -568,7 +496,7 @@ export default function TarifsPage() {
               </FadeUp>
               <Rule />
               <FadeUp delay={0.2}>
-                <p className="text-[#1A1917]/40 leading-[1.85]">
+                <p className="text-[#E8E2D8]/35 leading-[1.85]">
                   Contactez-nous pour étudier votre demande et vous faire une offre sur-mesure.
                 </p>
               </FadeUp>
@@ -577,14 +505,14 @@ export default function TarifsPage() {
             <FadeUp delay={0.2} className="flex flex-col gap-4">
               <a
                 href="mailto:contact@dronedeciel.com"
-                className="group inline-flex items-center gap-3 bg-[#1A1917] text-[#F8F5F0] font-bold text-[11px] tracking-[0.25em] uppercase px-8 py-5 hover:bg-[#2A2926] transition-colors duration-300"
+                className="group inline-flex items-center gap-3 bg-[#E8E2D8] text-[#0A0A0A] font-bold text-[11px] tracking-[0.25em] uppercase px-8 py-5 hover:bg-white transition-colors duration-300"
               >
                 Prenons contact
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </a>
               <a
                 href="tel:+33629586558"
-                className="inline-flex items-center gap-3 border border-[#1A1917]/[0.15] text-[#1A1917]/45 text-[11px] tracking-[0.25em] uppercase px-8 py-5 hover:border-[#1A1917]/30 hover:text-[#1A1917]/70 transition-all duration-300"
+                className="inline-flex items-center gap-3 border border-white/[0.12] text-[#E8E2D8]/40 text-[11px] tracking-[0.25em] uppercase px-8 py-5 hover:border-white/25 hover:text-[#E8E2D8]/70 transition-all duration-300"
               >
                 <Phone className="w-4 h-4" />
                 +33 (0)6 29 58 65 58
@@ -595,31 +523,31 @@ export default function TarifsPage() {
       </section>
 
       {/* ═══ FOOTER ═══ */}
-      <footer className="border-t border-[#1A1917]/[0.07] bg-[#EDE7DE] pt-16 pb-8">
+      <footer className="border-t border-white/[0.06] bg-[#080808] pt-16 pb-8">
         <div className="max-w-7xl mx-auto px-8">
           <div className="grid md:grid-cols-4 gap-12 mb-14">
 
             <div>
               <p
-                className="text-[11px] font-bold tracking-[0.2em] uppercase mb-5 text-[#1A1917]"
+                className="text-[11px] font-bold tracking-[0.2em] uppercase mb-5 text-[#E8E2D8]"
                 style={{ fontFamily: 'var(--font-playfair)' }}
               >
                 Drone de Ciel{' '}
                 <span className="text-[#9E8060]">|</span>{' '}
-                <span className="text-[#1A1917]/35 font-normal">Made In France</span>
+                <span className="text-[#E8E2D8]/25 font-normal">Made In France</span>
               </p>
-              <p className="text-[#1A1917]/30 text-xs leading-relaxed">
+              <p className="text-[#E8E2D8]/25 text-xs leading-relaxed">
                 Spectacles de drones féériques alliant technologie de pointe et magie visuelle,
                 pour tous vos évènements.
               </p>
             </div>
 
             <div>
-              <p className="text-[#1A1917]/35 text-[10px] tracking-[0.3em] uppercase mb-5">Navigation</p>
+              <p className="text-[#E8E2D8]/25 text-[10px] tracking-[0.3em] uppercase mb-5">Navigation</p>
               <ul className="space-y-3">
                 {["L'équipe", 'Vidéos', 'Prenons contact', 'Ils parlent de nous', 'FAQ'].map((l) => (
                   <li key={l}>
-                    <a href="#" className="text-[#1A1917]/30 text-sm hover:text-[#1A1917]/70 transition-colors duration-200">
+                    <a href="#" className="text-[#E8E2D8]/25 text-sm hover:text-[#E8E2D8]/60 transition-colors duration-200">
                       {l}
                     </a>
                   </li>
@@ -628,7 +556,7 @@ export default function TarifsPage() {
             </div>
 
             <div>
-              <p className="text-[#1A1917]/35 text-[10px] tracking-[0.3em] uppercase mb-5">Contact</p>
+              <p className="text-[#E8E2D8]/25 text-[10px] tracking-[0.3em] uppercase mb-5">Contact</p>
               <ul className="space-y-4">
                 {[
                   { Icon: Phone,  text: '+33 (0)6 29 58 65 58',               href: 'tel:+33629586558' },
@@ -636,8 +564,8 @@ export default function TarifsPage() {
                   { Icon: MapPin, text: '23 Route de Ternant\n01500 AMBUTRIX, France', href: '#' },
                 ].map(({ Icon, text, href }, i) => (
                   <li key={i}>
-                    <a href={href} className="flex items-start gap-3 text-[#1A1917]/30 text-sm hover:text-[#1A1917]/60 transition-colors">
-                      <Icon className="w-4 h-4 text-[#9E8060]/60 mt-0.5 shrink-0" />
+                    <a href={href} className="flex items-start gap-3 text-[#E8E2D8]/25 text-sm hover:text-[#E8E2D8]/50 transition-colors">
+                      <Icon className="w-4 h-4 text-[#9E8060]/50 mt-0.5 shrink-0" />
                       <span className="whitespace-pre-line">{text}</span>
                     </a>
                   </li>
@@ -646,13 +574,13 @@ export default function TarifsPage() {
             </div>
 
             <div>
-              <p className="text-[#1A1917]/35 text-[10px] tracking-[0.3em] uppercase mb-5">Suivez-nous</p>
+              <p className="text-[#E8E2D8]/25 text-[10px] tracking-[0.3em] uppercase mb-5">Suivez-nous</p>
               <div className="flex gap-3">
                 {[IconInstagram, IconFacebook, IconLinkedin, IconYoutube].map((Icon, i) => (
                   <a
                     key={i}
                     href="#"
-                    className="w-9 h-9 border border-[#1A1917]/[0.12] flex items-center justify-center text-[#1A1917]/25 hover:border-[#1A1917]/30 hover:text-[#1A1917]/60 transition-all duration-300"
+                    className="w-9 h-9 border border-white/[0.08] flex items-center justify-center text-[#E8E2D8]/20 hover:border-white/20 hover:text-[#E8E2D8]/50 transition-all duration-300"
                   >
                     <Icon />
                   </a>
@@ -661,11 +589,11 @@ export default function TarifsPage() {
             </div>
           </div>
 
-          <div className="h-px bg-[#1A1917]/[0.06]" />
+          <div className="h-px bg-white/[0.05]" />
 
           <div className="mt-8 flex flex-col md:flex-row items-center justify-between gap-3">
-            <p className="text-[#1A1917]/20 text-[11px] tracking-wide">© 2026 DRONE DE CIEL | Made In France</p>
-            <p className="text-[#1A1917]/20 text-[11px] tracking-wide">www.dronedeciel.show</p>
+            <p className="text-[#E8E2D8]/15 text-[11px] tracking-wide">© 2026 DRONE DE CIEL | Made In France</p>
+            <p className="text-[#E8E2D8]/15 text-[11px] tracking-wide">www.dronedeciel.show</p>
           </div>
         </div>
       </footer>

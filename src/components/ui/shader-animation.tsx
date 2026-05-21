@@ -68,9 +68,9 @@ export function ShaderAnimation({ className }: ShaderAnimationProps) {
       transparent: true,
       uniforms: {
         uTime:   { value: 0 },
-        uColorA: { value: new THREE.Color('#EDE7DE') },
-        uColorB: { value: new THREE.Color('#D9CCBC') },
-        uColorC: { value: new THREE.Color('#C8B89E') },
+        uColorA: { value: new THREE.Color('#1A1208') },
+        uColorB: { value: new THREE.Color('#251A0A') },
+        uColorC: { value: new THREE.Color('#332210') },
       },
       vertexShader,
       fragmentShader,
