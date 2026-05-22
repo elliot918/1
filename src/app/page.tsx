@@ -1,61 +1,29 @@
 'use client'
 
-import { motion, useReducedMotion } from 'framer-motion'
-import { useRef } from 'react'
 import Image from 'next/image'
-import { SplineScene } from '@/components/ui/splite'
-import { AuroraBackground } from '@/components/ui/aurora-background'
-import { ShaderAnimation } from '@/components/ui/shader-animation'
-import { Typewriter } from '@/components/ui/typewriter'
-import { Spotlight } from '@/components/ui/spotlight'
-import { StickyScroll } from '@/components/ui/sticky-scroll-reveal'
-import { HeroParallax } from '@/components/ui/hero-parallax'
-import { TracingBeam } from '@/components/ui/tracing-beam'
-import {
-  Zap, Clock, Repeat, Leaf, Flame, BarChart3, Star,
-  ChevronRight, Phone, Mail, MapPin, Menu,
-} from 'lucide-react'
-import { useInView } from 'framer-motion'
+import { useRef, useState, useEffect } from 'react'
+import { motion, useScroll, useTransform, useInView } from 'framer-motion'
+import { LenisProvider } from '@/components/LenisProvider'
+import { Phone, Mail, ArrowRight, Scissors, Droplets, Leaf, Mountain, Sprout, ChevronDown } from 'lucide-react'
 
-/* ── Social icons ── */
-const IconInstagram = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-    <rect x="2" y="2" width="20" height="20" rx="5" /><circle cx="12" cy="12" r="4" />
-    <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none" />
-  </svg>
-)
-const IconFacebook = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-  </svg>
-)
-const IconLinkedin = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-    <rect x="2" y="9" width="4" height="12" /><circle cx="4" cy="4" r="2" />
-  </svg>
-)
-const IconYoutube = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-    <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.96-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z" />
-    <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" />
-  </svg>
-)
-
-/* ── Animation constants — Emil Kowalski ── */
-const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1]
-const EASE_FAST: [number, number, number, number] = [0.16, 1, 0.3, 1]
-
-function FadeUp({ children, delay = 0, className }: { children: React.ReactNode; delay?: number; className?: string }) {
+/* ─── Fade-in wrapper ─── */
+function FadeIn({
+  children,
+  delay = 0,
+  className = '',
+}: {
+  children: React.ReactNode
+  delay?: number
+  className?: string
+}) {
   const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-60px' })
-  const reduced = useReducedMotion()
+  const inView = useInView(ref, { once: true, margin: '-80px' })
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: reduced ? 0 : 18 }}
+      initial={{ opacity: 0, y: 32 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: reduced ? 0.15 : 0.55, delay: reduced ? 0 : delay, ease: EASE_OUT }}
+      transition={{ duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] }}
       className={className}
     >
       {children}
@@ -63,439 +31,627 @@ function FadeUp({ children, delay = 0, className }: { children: React.ReactNode;
   )
 }
 
-function Press({ children, className, href }: { children: React.ReactNode; className?: string; href: string }) {
-  const reduced = useReducedMotion()
+/* ─── Section label ─── */
+function Label({ text }: { text: string }) {
   return (
-    <motion.a
-      href={href}
-      whileTap={reduced ? {} : { scale: 0.97 }}
-      transition={{ duration: 0.12, ease: EASE_FAST }}
-      className={className}
+    <span
+      className="inline-block text-xs tracking-[0.25em] uppercase mb-6"
+      style={{ color: 'var(--green-olive)' }}
     >
-      {children}
-    </motion.a>
+      {text}
+    </span>
   )
 }
 
-function Label({ children }: { children: React.ReactNode }) {
-  return <span className="inline-block text-[#9E8060] text-[9px] tracking-[0.4em] uppercase font-medium">{children}</span>
-}
-function Rule() {
-  return <div className="my-10 w-10 h-px bg-[#9E8060]/60" />
-}
-
-/* ── Data ── */
-
-const dronePhotos = [
-  { title: 'Formation Pikachu',        link: '#', thumbnail: '/images/pikachu.jpg' },
-  { title: 'Lumières de nuit',         link: '#', thumbnail: '/images/nightlights.jpg' },
-  { title: 'Drone en vol',             link: '#', thumbnail: '/images/drone_fly.jpg' },
-  { title: 'Essaim aérien',            link: '#', thumbnail: '/images/drone_flight.jpg' },
-  { title: 'Caméra embarquée',         link: '#', thumbnail: '/images/drone_cam.jpg' },
-  { title: 'Drone au-dessus de l\'eau', link: '#', thumbnail: '/images/drone_water.jpg' },
-  { title: 'Vue aérienne',             link: '#', thumbnail: '/images/aerial_sunset.jpg' },
-  { title: 'Spectacle drone swarm',    link: '#', thumbnail: '/images/pikachu.jpg' },
-  { title: 'Show nocturne',            link: '#', thumbnail: '/images/nightlights.jpg' },
-  { title: 'Made in France',           link: '#', thumbnail: '/images/drone_fly.jpg' },
-  { title: 'Ballet aérien',            link: '#', thumbnail: '/images/drone_flight.jpg' },
-  { title: 'Drone & caméra',           link: '#', thumbnail: '/images/drone_cam.jpg' },
-  { title: 'Drone Mavic',              link: '#', thumbnail: '/images/drone_water.jpg' },
-  { title: 'Magie du ciel',            link: '#', thumbnail: '/images/pikachu.jpg' },
-  { title: 'Chorégraphie aérienne',    link: '#', thumbnail: '/images/nightlights.jpg' },
-]
-
-function StickyImg({ src, label }: { src: string; label: string }) {
+/* ─── Divider ─── */
+function Divider() {
   return (
-    <div className="relative h-full w-full overflow-hidden">
-      <img src={src} alt={label} className="absolute inset-0 h-full w-full object-cover" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-      <span className="absolute bottom-4 left-4 text-[#E8E2D8]/70 text-[10px] tracking-[0.32em] uppercase">{label}</span>
+    <div className="flex items-center gap-4 my-2">
+      <div className="h-px flex-1" style={{ background: 'var(--beige-sand)' }} />
+      <div className="w-1 h-1 rounded-full" style={{ background: 'var(--green-olive)' }} />
+      <div className="h-px flex-1" style={{ background: 'var(--beige-sand)' }} />
     </div>
   )
 }
 
-const prestations = [
-  {
-    title: 'Spectacles d\'entreprise',
-    description: 'Utilisez les spectacles de drones pour afficher votre logo, un slogan ou toute autre communication de marque lors de vos événements corporate. Un impact visuel inoubliable pour vos clients et collaborateurs.',
-    content: <StickyImg src="/images/pikachu.jpg" label="Entreprises" />,
-  },
-  {
-    title: 'Collectivités et associations',
-    description: 'Remplacez les feux d\'artifice par des spectacles écologiques et sans risque, conformes aux nouvelles réglementations environnementales. Des animations féeriques pour tous vos événements publics.',
-    content: <StickyImg src="/images/nightlights.jpg" label="Collectivités" />,
-  },
-  {
-    title: 'Particuliers et mariages',
-    description: 'Des formules pré-conçues pour des moments inoubliables lors de mariages, anniversaires et événements privés. La magie des drones accessible à tous les budgets.',
-    content: <StickyImg src="/images/drone_fly.jpg" label="Particuliers & Mariages" />,
-  },
-  {
-    title: 'Création sur-mesure',
-    description: 'Nous concevons des chorégraphies entièrement personnalisées pour transporter votre public dans votre univers. De la conception à la réalisation, un accompagnement total.',
-    content: <StickyImg src="/images/drone_water.jpg" label="Sur-mesure" />,
-  },
-]
+/* ─── Nav ─── */
+function Nav() {
+  const [scrolled, setScrolled] = useState(false)
 
-/* ═══════════════════════════════════════════
-   PAGE
-═══════════════════════════════════════════ */
-export default function TarifsPage() {
-  const reduced = useReducedMotion()
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 80)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  const fg = scrolled ? 'var(--green-deep)' : 'var(--off-white)'
+  const bg = scrolled ? 'rgba(248,245,239,0.95)' : 'transparent'
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-[#E8E2D8] overflow-x-hidden" style={{ fontFamily: 'var(--font-inter)' }}>
-
-      {/* ── NAV ── */}
-      <nav className="fixed top-0 inset-x-0 z-50 bg-[#0A0A0A]/85 backdrop-blur-2xl border-b border-white/[0.05]">
-        <div className="max-w-7xl mx-auto px-8 h-16 flex items-center justify-between">
-          <span className="text-[10px] font-bold tracking-[0.28em] uppercase text-[#E8E2D8]" style={{ fontFamily: 'var(--font-playfair)' }}>
-            Drone de Ciel <span className="text-[#9E8060]">·</span>{' '}
-            <span className="text-[#E8E2D8]/30 font-normal tracking-[0.2em]">Made In France</span>
-          </span>
-          <div className="hidden md:flex items-center gap-10">
-            <a href="#prestations" className="text-[#E8E2D8]/30 text-[10px] tracking-[0.22em] uppercase hover:text-[#E8E2D8]/70 transition-colors duration-200">Nos prestations</a>
-            <a href="#univers" className="text-[#E8E2D8]/30 text-[10px] tracking-[0.22em] uppercase hover:text-[#E8E2D8]/70 transition-colors duration-200">L'équipe</a>
-            <a href="#realisations" className="text-[#E8E2D8]/30 text-[10px] tracking-[0.22em] uppercase hover:text-[#E8E2D8]/70 transition-colors duration-200">Nos réalisations</a>
-            <Press href="#contact" className="border border-white/15 text-[#E8E2D8]/50 text-[10px] tracking-[0.22em] uppercase px-5 py-2.5 hover:bg-white hover:text-[#0A0A0A] transition-colors duration-200 cursor-pointer">
-              Prenons contact
-            </Press>
-          </div>
-          <button className="md:hidden text-[#E8E2D8]/40 hover:text-[#E8E2D8]"><Menu className="w-5 h-5" /></button>
-        </div>
-      </nav>
-
-      {/* ── HERO — 2 colonnes : texte gauche, Spline drone droite ── */}
-      <AuroraBackground className="h-screen overflow-hidden">
-        <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="#C9A84C" />
-        <ShaderAnimation className="absolute inset-0 opacity-35 pointer-events-none" />
-
-        <div className="relative z-10 h-full w-full max-w-7xl mx-auto px-10 lg:px-16 pt-16 grid grid-cols-1 lg:grid-cols-2 items-center gap-8">
-
-          {/* Left — texte */}
-          <div>
-            <motion.div
-              initial={{ opacity: 0, y: reduced ? 0 : -6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2, ease: EASE_OUT }}
-            >
-              <Label>Nos tarifs et nos prestations</Label>
-            </motion.div>
-
-            <motion.h1
-              initial={{ opacity: 0, y: reduced ? 0 : 28 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.38, ease: EASE_OUT }}
-              className="mt-6 font-bold text-[#E8E2D8] leading-[0.9]"
-              style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(2.8rem, 6vw, 6rem)', minHeight: '1.9em' }}
-            >
-              <Typewriter words={['Spectacle de drones', 'Féerie dans le ciel', 'Made in France']} typingSpeed={70} deletingSpeed={35} pauseDuration={2400} />
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.75, ease: EASE_OUT }}
-              className="mt-7 text-[15px] text-[#E8E2D8]/30 italic tracking-wide max-w-md"
-              style={{ fontFamily: 'var(--font-playfair)' }}
-            >
-              Combinez féérie et technologie
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: reduced ? 0 : 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 1.0, ease: EASE_OUT }}
-              className="mt-10 flex flex-col sm:flex-row gap-3"
-            >
-              <Press href="#contact" className="group inline-flex items-center gap-2.5 bg-[#E8E2D8] text-[#0A0A0A] text-[10px] tracking-[0.28em] uppercase font-bold px-8 py-4 hover:bg-white transition-colors duration-150 cursor-pointer">
-                Prenons contact
-                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform duration-150" />
-              </Press>
-              <Press href="#prestations" className="inline-flex items-center gap-2 border border-white/[0.10] text-[#E8E2D8]/30 text-[10px] tracking-[0.28em] uppercase px-8 py-4 hover:border-white/20 hover:text-[#E8E2D8]/60 transition-all duration-150 cursor-pointer">
-                Découvrir
-              </Press>
-            </motion.div>
-          </div>
-
-          {/* Right — drone Spline avec lévitation */}
-          <motion.div
-            initial={{ opacity: 0, scale: reduced ? 1 : 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.9, delay: 0.55, ease: EASE_OUT }}
-            className="hidden lg:flex items-center justify-center h-full"
+    <nav
+      className="fixed top-0 left-0 right-0 z-50 px-6 py-5 flex items-center justify-between transition-all duration-500"
+      style={{ background: bg, backdropFilter: scrolled ? 'blur(12px)' : 'none' }}
+    >
+      <a href="#" className="text-sm tracking-[0.2em] uppercase font-light transition-colors duration-500" style={{ color: fg }}>
+        S.D.S Espaces Verts
+      </a>
+      <div className="hidden md:flex items-center gap-8">
+        {['#services', '#realisations', '#apropos', '#contact'].map((href, i) => (
+          <a
+            key={href}
+            href={href}
+            className="text-xs tracking-[0.2em] uppercase font-light transition-all duration-500 hover:opacity-60"
+            style={{ color: fg }}
           >
-            <div className="animate-levitate w-full" style={{ height: '480px' }}>
-              <SplineScene
-                scene="https://prod.spline.design/DQNn6KoBM5YFGYXD/scene.splinecode"
-                className="w-full h-full"
-              />
-            </div>
-          </motion.div>
+            {['Services', 'Réalisations', 'À propos', 'Contact'][i]}
+          </a>
+        ))}
+      </div>
+    </nav>
+  )
+}
 
-        </div>
+/* ─── Hero ─── */
+function Hero() {
+  const ref = useRef(null)
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
+  const y = useTransform(scrollYProgress, [0, 1], ['0%', '30%'])
+  const opacity = useTransform(scrollYProgress, [0, 0.7], [1, 0])
+
+  return (
+    <section ref={ref} className="relative h-screen min-h-[600px] overflow-hidden flex items-center justify-center">
+      <motion.div className="absolute inset-0 scale-110" style={{ y }}>
+        <motion.div
+          className="absolute inset-0"
+          initial={{ scale: 1.12 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 8, ease: 'easeOut' }}
+        >
+          <Image
+            src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=1920&q=85&fit=crop"
+            alt="Jardin paysager de luxe"
+            fill
+            priority
+            className="object-cover"
+            sizes="100vw"
+          />
+        </motion.div>
+      </motion.div>
+
+      <div
+        className="absolute inset-0"
+        style={{ background: 'linear-gradient(to bottom, rgba(31,61,43,0.55) 0%, rgba(31,61,43,0.3) 50%, rgba(31,61,43,0.65) 100%)' }}
+      />
+
+      <motion.div style={{ opacity }} className="relative z-10 text-center px-6 max-w-4xl mx-auto">
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="text-xs tracking-[0.3em] uppercase mb-6"
+          style={{ color: 'var(--beige-sand)' }}
+        >
+          S.D.S Espaces Verts
+        </motion.p>
+
+        <motion.h1
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="text-5xl md:text-7xl lg:text-8xl font-light italic"
+          style={{ color: 'var(--off-white)', fontFamily: 'var(--font-cormorant)' }}
+        >
+          Création et entretien<br />de jardins durables
+        </motion.h1>
 
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2.2, duration: 0.6, ease: EASE_OUT }}
-          className="absolute bottom-10 left-10 lg:left-16 flex items-center gap-3 z-10"
+          initial={{ opacity: 0, scaleX: 0 }}
+          animate={{ opacity: 1, scaleX: 1 }}
+          transition={{ duration: 0.8, delay: 0.9 }}
+          className="w-16 h-px mx-auto my-8"
+          style={{ background: 'var(--beige-sand)' }}
+        />
+
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 1.1 }}
+          className="flex flex-col sm:flex-row gap-4 justify-center"
         >
-          <div className="w-8 h-px bg-[#9E8060]/50" />
-          <span className="text-[#E8E2D8]/20 text-[8px] tracking-[0.45em] uppercase">Défiler</span>
+          <a
+            href="#contact"
+            className="px-8 py-4 text-sm tracking-[0.15em] uppercase transition-opacity hover:opacity-80"
+            style={{ background: 'var(--green-deep)', color: 'var(--off-white)' }}
+          >
+            Demander un devis
+          </a>
+          <a
+            href="#services"
+            className="px-8 py-4 text-sm tracking-[0.15em] uppercase border transition-all hover:bg-white/10"
+            style={{ borderColor: 'var(--off-white)', color: 'var(--off-white)' }}
+          >
+            Découvrir les services
+          </a>
         </motion.div>
-      </AuroraBackground>
+      </motion.div>
 
-      {/* ── HERO PARALLAX — spectacles de drones ── */}
-      <div id="realisations" className="bg-[#0A0A0A]">
-        <HeroParallax products={dronePhotos} />
-      </div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 2 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        style={{ color: 'var(--beige-sand)' }}
+      >
+        <span className="text-[10px] tracking-[0.2em] uppercase">Défiler</span>
+        <motion.div
+          animate={{ y: [0, 6, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+        >
+          <ChevronDown size={16} />
+        </motion.div>
+      </motion.div>
+    </section>
+  )
+}
 
-      {/* ── TRACING BEAM ── */}
-      <TracingBeam className="max-w-none w-full px-0">
+/* ─── Introduction ─── */
+function Introduction() {
+  return (
+    <section id="intro" className="py-32 px-6" style={{ background: 'var(--off-white)' }}>
+      <div className="max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-16 items-center">
+          <FadeIn>
+            <Label text="Notre engagement" />
+            <h2 className="text-4xl md:text-5xl font-light italic mb-8" style={{ color: 'var(--green-deep)' }}>
+              Un regard sensible<br />sur chaque espace
+            </h2>
+            <Divider />
+            <p className="mt-8 text-base leading-relaxed font-light" style={{ color: 'var(--green-deep)', opacity: 0.75 }}>
+              Chez S.D.S Espaces Verts, chaque jardin est une œuvre vivante. Nous conjuguons savoir-faire technique
+              et sensibilité esthétique pour concevoir des espaces qui respirent, qui évoluent avec les saisons,
+              et qui s'inscrivent harmonieusement dans leur environnement.
+            </p>
+            <p className="mt-4 text-base leading-relaxed font-light" style={{ color: 'var(--green-deep)', opacity: 0.75 }}>
+              Du petit jardin privé au grand parc, notre approche reste la même : écouter, concevoir, réaliser
+              avec soin et accompagner dans la durée.
+            </p>
+          </FadeIn>
 
-        {/* ── STATS ── */}
-        <section className="border-t border-b border-white/[0.05] bg-[#0D0D0D]">
-          <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 divide-x divide-white/[0.05]">
-            {[
-              { n: '100 – 800', label: 'drones par spectacle' },
-              { n: '13 min',    label: 'durée moyenne' },
-              { n: '15 – 25',  label: 'scènes par chorégraphie' },
-              { n: '10 sem.',  label: 'de préparation' },
-            ].map((s, i) => (
-              <FadeUp key={i} delay={i * 0.05} className="px-8 md:px-14 py-14 text-center">
-                <div className="text-[2.4rem] md:text-[2.8rem] font-bold leading-none text-[#E8E2D8]" style={{ fontFamily: 'var(--font-playfair)' }}>{s.n}</div>
-                <div className="mt-3 text-[#E8E2D8]/28 text-[9px] tracking-[0.35em] uppercase">{s.label}</div>
-              </FadeUp>
-            ))}
-          </div>
-        </section>
-
-        {/* ── OFFRE ADAPTÉE — texte + 3 colonnes avantages ── */}
-        <section id="offre" className="py-24 border-t border-white/[0.05] bg-[#0A0A0A]">
-          <div className="max-w-7xl mx-auto px-8">
-            <FadeUp className="text-center mb-16">
-              <Label>Notre expertise</Label>
-              <h2
-                className="mt-5 font-bold text-[#E8E2D8] leading-[1.04]"
-                style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(2rem, 4vw, 3.4rem)' }}
-              >
-                Une offre adaptée<br />à tous les budgets
-              </h2>
-              <p className="mt-5 text-[#E8E2D8]/35 text-[14px] leading-[1.85] max-w-xl mx-auto">
-                Drone de Ciel s'appuie sur des technologies de pointe pour créer des spectacles
-                féériques qui sauront provoquer l'émerveillement de votre public.
-              </p>
-            </FadeUp>
-
-            <div className="grid md:grid-cols-3 gap-px bg-white/[0.04]">
-              {[
-                { icon: Zap,      title: 'Technologie de pointe',      body: 'Flotte de drones LED dernière génération, programmée en temps réel pour des effets spectaculaires.' },
-                { icon: Star,     title: 'Chorégraphies sur-mesure',   body: 'Chaque spectacle est unique et conçu autour de votre identité, votre message, votre univers.' },
-                { icon: Leaf,     title: 'Éco-responsable & sécurisé', body: 'Zéro risque d\'incendie, zéro déchet. Nos drones sont réutilisables et silencieux.' },
-              ].map(({ icon: Icon, title, body }, i) => (
-                <FadeUp key={i} delay={i * 0.05}>
-                  <div className="bg-[#0A0A0A] px-10 py-12 hover:bg-[#111111] transition-colors duration-200 h-full">
-                    <Icon className="w-5 h-5 text-[#9E8060] mb-8" strokeWidth={1.5} />
-                    <h3 className="text-[#E8E2D8] font-semibold text-[14px] mb-3" style={{ fontFamily: 'var(--font-playfair)' }}>{title}</h3>
-                    <p className="text-[#E8E2D8]/30 text-[13px] leading-[1.8]">{body}</p>
-                  </div>
-                </FadeUp>
-              ))}
+          <FadeIn delay={0.2}>
+            <div className="relative aspect-[3/4] overflow-hidden">
+              <Image
+                src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=900&q=85&fit=crop"
+                alt="Allée de jardin paysager"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
             </div>
-          </div>
-        </section>
-
-        {/* ── STICKY SCROLL — Prestations ── */}
-        <section id="prestations" className="py-20 border-t border-white/[0.05] bg-[#0A0A0A]">
-          <div className="max-w-7xl mx-auto px-8 mb-14">
-            <FadeUp><Label>Nos prestations</Label></FadeUp>
-            <FadeUp delay={0.05}>
-              <h2
-                className="mt-5 font-bold text-[#E8E2D8] max-w-lg"
-                style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(2rem, 4vw, 3.4rem)' }}
-              >
-                Un spectacle pour chaque occasion
-              </h2>
-            </FadeUp>
-          </div>
-          <div className="max-w-7xl mx-auto px-8">
-            <StickyScroll content={prestations} />
-          </div>
-        </section>
-
-        {/* ── VOTRE UNIVERS ── */}
-        <section id="univers" className="py-24 border-t border-white/[0.05]">
-          <div className="max-w-7xl mx-auto px-8">
-            <div className="grid md:grid-cols-2 gap-16 xl:gap-24 items-center">
-              <FadeUp delay={0.05} className="order-2 md:order-1">
-                <div className="relative aspect-[3/4] overflow-hidden">
-                  <Image
-                    src="/images/pikachu.jpg"
-                    alt="Spectacle de drones de nuit"
-                    fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-cover hover:scale-[1.03] transition-transform duration-700"
-                    unoptimized
-                  />
-                </div>
-              </FadeUp>
-              <div className="order-1 md:order-2 max-w-xl">
-                <FadeUp><Label>Sur-mesure</Label></FadeUp>
-                <FadeUp delay={0.05}>
-                  <h2 className="mt-5 font-bold leading-[1.04] text-[#E8E2D8]" style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(2rem, 4vw, 3.4rem)' }}>
-                    Votre univers,<br />dans le ciel
-                  </h2>
-                </FadeUp>
-                <Rule />
-                <FadeUp delay={0.10}><p className="text-[#E8E2D8]/42 leading-[1.9] text-[15px]">Chez Drone De Ciel, nous travaillons avec du matériel technologique innovant qui nécessite des investissements importants ; les tarifs permettent ainsi de vous garantir des spectacles de drones de haute qualité et un accompagnement de tous les instants.</p></FadeUp>
-                <FadeUp delay={0.15}><p className="mt-5 text-[#E8E2D8]/42 leading-[1.9] text-[15px]">Pour proposer des prix contenus, nous pouvons élaborer un spectacle personnalisé sur la base de figures pré-conçues spécialement pour les évènements particuliers (anniversaires, mariages, etc). Nos tarifs peuvent ainsi s'adapter à votre budget.</p></FadeUp>
-                <FadeUp delay={0.20}><p className="mt-5 text-[#E8E2D8]/42 leading-[1.9] text-[15px]">Vous souhaitez transporter votre public dans votre univers, mettre en avant votre marque ou votre expertise ? Contactez-nous pour une offre sur-mesure.</p></FadeUp>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── SPECS ── */}
-        <section className="py-24 border-t border-white/[0.05] bg-[#0D0D0D]">
-          <div className="max-w-7xl mx-auto px-8">
-            <div className="mb-16">
-              <FadeUp><Label>Quelques informations clés</Label></FadeUp>
-              <FadeUp delay={0.05}>
-                <h2 className="mt-5 font-bold text-[#E8E2D8]" style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(2rem, 4vw, 3.4rem)' }}>L'excellence en chiffres</h2>
-              </FadeUp>
-            </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-white/[0.04]">
-              {([
-                { Icon: Zap,       title: 'Chorégraphies personnalisées', body: 'Création de chorégraphies personnalisées selon vos besoins.' },
-                { Icon: BarChart3, title: '100 à 800 drones',             body: '100 à 800 drones par spectacle pour des effets à grande échelle.' },
-                { Icon: Clock,     title: '10 semaines de préparation',   body: "10 semaines de préparation, y compris les demandes d'autorisation." },
-                { Icon: Star,      title: '15 à 25 scènes',               body: '15 à 25 scènes par chorégraphie pour un spectacle complet.' },
-                { Icon: Clock,     title: '13 minutes',                   body: "Durée moyenne d'un spectacle : 13 minutes d'émerveillement." },
-                { Icon: Flame,     title: "Zéro risque d'incendie",       body: "La technologie employée permet d'écarter tout risque d'incendie." },
-                { Icon: Repeat,    title: 'Spectacle répétable',          body: 'Le spectacle peut être répété plusieurs fois sans contrainte.' },
-                { Icon: Leaf,      title: 'Éco-responsable',              body: 'Les drones sont réutilisables, sans émission et recyclables.' },
-              ] as const).map((item, i) => (
-                <FadeUp key={i} delay={i * 0.04}>
-                  <div className="bg-[#0D0D0D] px-8 py-10 hover:bg-[#141414] transition-colors duration-200 h-full">
-                    <item.Icon className="w-4 h-4 text-[#9E8060] mb-8" strokeWidth={1.5} />
-                    <h3 className="text-[#E8E2D8] font-semibold text-[13px] mb-3" style={{ fontFamily: 'var(--font-playfair)' }}>{item.title}</h3>
-                    <p className="text-[#E8E2D8]/28 text-[12px] leading-[1.75]">{item.body}</p>
-                  </div>
-                </FadeUp>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── QUOTE ── */}
-        <section className="py-28 border-t border-white/[0.05]">
-          <div className="max-w-3xl mx-auto px-8 text-center">
-            <FadeUp>
-              <div className="text-[#9E8060]/70 text-7xl leading-none mb-10 select-none" style={{ fontFamily: 'var(--font-playfair)' }}>&ldquo;</div>
-              <blockquote className="text-[1.6rem] md:text-[2rem] font-bold italic leading-[1.5] text-[#E8E2D8]/55" style={{ fontFamily: 'var(--font-playfair)' }}>
-                Notre objectif est de permettre à tous les publics de profiter de la féérie et de la magie des spectacles de drones.
-              </blockquote>
-              <div className="mt-12 flex items-center justify-center gap-6">
-                <div className="h-px w-10 bg-[#9E8060]/50" />
-                <span className="text-[#9E8060] text-[9px] tracking-[0.4em] uppercase">Drone de Ciel</span>
-                <div className="h-px w-10 bg-[#9E8060]/50" />
-              </div>
-            </FadeUp>
-          </div>
-        </section>
-
-        {/* ── CTA ── */}
-        <section id="contact" className="py-24 border-t border-white/[0.05] bg-[#0D0D0D]">
-          <div className="max-w-7xl mx-auto px-8">
-            <div className="grid md:grid-cols-2 gap-20 items-center">
-              <div className="max-w-xl">
-                <FadeUp><Label>Passons à l'action</Label></FadeUp>
-                <FadeUp delay={0.05}>
-                  <h2 className="mt-5 font-bold leading-[1.02] text-[#E8E2D8]" style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(2.4rem, 5vw, 4.2rem)' }}>
-                    Faites briller votre évènement avec un spectacle de drones
-                  </h2>
-                </FadeUp>
-                <Rule />
-                <FadeUp delay={0.10}><p className="text-[#E8E2D8]/32 leading-[1.9] text-[15px] max-w-[55ch]">Contactez-nous pour étudier votre demande et vous faire une offre sur-mesure.</p></FadeUp>
-              </div>
-              <FadeUp delay={0.10} className="flex flex-col gap-4">
-                <Press href="mailto:contact@dronedeciel.com" className="group inline-flex items-center gap-3 bg-[#E8E2D8] text-[#0A0A0A] font-bold text-[10px] tracking-[0.28em] uppercase px-8 py-5 hover:bg-white transition-colors duration-150 cursor-pointer">
-                  Prenons contact
-                  <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-150" />
-                </Press>
-                <Press href="tel:+33629586558" className="inline-flex items-center gap-3 border border-white/[0.10] text-[#E8E2D8]/38 text-[10px] tracking-[0.28em] uppercase px-8 py-5 hover:border-white/20 hover:text-[#E8E2D8]/65 transition-all duration-150 cursor-pointer">
-                  <Phone className="w-4 h-4" strokeWidth={1.5} />
-                  +33 (0)6 29 58 65 58
-                </Press>
-              </FadeUp>
-            </div>
-          </div>
-        </section>
-
-      </TracingBeam>
-
-      {/* ── FOOTER ── */}
-      <footer className="border-t border-white/[0.05] bg-[#070707] pt-16 pb-10">
-        <div className="max-w-7xl mx-auto px-8">
-          <div className="grid md:grid-cols-4 gap-14 mb-16">
-            <div>
-              <p className="text-[10px] font-bold tracking-[0.25em] uppercase mb-6 text-[#E8E2D8]" style={{ fontFamily: 'var(--font-playfair)' }}>
-                Drone de Ciel <span className="text-[#9E8060]">·</span>{' '}
-                <span className="text-[#E8E2D8]/25 font-normal">Made In France</span>
-              </p>
-              <p className="text-[#E8E2D8]/22 text-[12px] leading-[1.8] max-w-[36ch]">Spectacles de drones féériques alliant technologie de pointe et magie visuelle, pour tous vos évènements.</p>
-            </div>
-            <div>
-              <p className="text-[#E8E2D8]/22 text-[9px] tracking-[0.38em] uppercase mb-6">Navigation</p>
-              <ul className="space-y-3.5">
-                {[
-                  { label: "L'équipe",           href: '#univers' },
-                  { label: 'Vidéos',              href: '#' },
-                  { label: 'Prenons contact',     href: '#contact' },
-                  { label: 'Ils parlent de nous', href: '#' },
-                  { label: 'FAQ',                 href: '#' },
-                ].map(({ label, href }) => (
-                  <li key={label}><a href={href} className="text-[#E8E2D8]/22 text-[13px] hover:text-[#E8E2D8]/55 transition-colors duration-150">{label}</a></li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <p className="text-[#E8E2D8]/22 text-[9px] tracking-[0.38em] uppercase mb-6">Contact</p>
-              <ul className="space-y-4">
-                {[
-                  { Icon: Phone,  text: '+33 (0)6 29 58 65 58',                    href: 'tel:+33629586558' },
-                  { Icon: Mail,   text: 'contact@dronedeciel.com',                  href: 'mailto:contact@dronedeciel.com' },
-                  { Icon: MapPin, text: '23 Route de Ternant\n01500 AMBUTRIX, France', href: '#' },
-                ].map(({ Icon, text, href }, i) => (
-                  <li key={i}>
-                    <a href={href} className="flex items-start gap-3 text-[#E8E2D8]/22 text-[13px] hover:text-[#E8E2D8]/50 transition-colors duration-150">
-                      <Icon className="w-4 h-4 text-[#9E8060]/45 mt-0.5 shrink-0" strokeWidth={1.5} />
-                      <span className="whitespace-pre-line">{text}</span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <p className="text-[#E8E2D8]/22 text-[9px] tracking-[0.38em] uppercase mb-6">Suivez-nous</p>
-              <div className="flex gap-2.5">
-                {[IconInstagram, IconFacebook, IconLinkedin, IconYoutube].map((Icon, i) => (
-                  <motion.a key={i} href="#" whileTap={reduced ? {} : { scale: 0.92 }} transition={{ duration: 0.12, ease: EASE_FAST }} className="w-9 h-9 border border-white/[0.07] flex items-center justify-center text-[#E8E2D8]/18 hover:border-white/15 hover:text-[#E8E2D8]/45 transition-all duration-150 cursor-pointer">
-                    <Icon />
-                  </motion.a>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="h-px bg-white/[0.04]" />
-          <div className="mt-8 flex flex-col md:flex-row items-center justify-between gap-3">
-            <p className="text-[#E8E2D8]/14 text-[10px] tracking-wide">© 2026 DRONE DE CIEL · Made In France</p>
-            <p className="text-[#E8E2D8]/14 text-[10px] tracking-wide">www.dronedeciel.show</p>
-          </div>
+          </FadeIn>
         </div>
-      </footer>
+      </div>
+    </section>
+  )
+}
 
-    </div>
+/* ─── Services ─── */
+const services = [
+  {
+    icon: Mountain,
+    title: 'Création de jardins',
+    description: 'Conception et réalisation complète de votre jardin, du terrassement à la plantation. Nous donnons vie à vos espaces extérieurs selon vos envies et votre budget.',
+  },
+  {
+    icon: Scissors,
+    title: 'Entretien régulier',
+    description: 'Prestations d\'entretien sur mesure pour maintenir votre jardin dans un état impeccable tout au long de l\'année. Tonte, désherbage, débroussaillage.',
+  },
+  {
+    icon: Scissors,
+    title: 'Taille et élagage',
+    description: 'Taille soignée de vos haies, arbustes et arbres. Nous respectons les cycles végétaux pour favoriser une croissance saine et une silhouette harmonieuse.',
+  },
+  {
+    icon: Sprout,
+    title: 'Amendement des sols',
+    description: 'Analyse et amélioration de la qualité de vos sols pour offrir à vos plantes les meilleures conditions de développement. Compostage, apport organique.',
+  },
+  {
+    icon: Droplets,
+    title: 'Systèmes d\'arrosage',
+    description: 'Installation et programmation de systèmes d\'arrosage automatique économes en eau. Goutte-à-goutte, asperseurs, gestion intelligente selon la météo.',
+  },
+  {
+    icon: Leaf,
+    title: 'Pratiques respectueuses',
+    description: 'Engagement fort pour l\'environnement : zéro pesticide, favorisation de la biodiversité, choix d\'espèces locales et résistantes à la sécheresse.',
+  },
+]
+
+function Services() {
+  return (
+    <section id="services" className="py-32 px-6" style={{ background: 'var(--green-deep)' }}>
+      <div className="max-w-6xl mx-auto">
+        <FadeIn className="text-center mb-20">
+          <Label text="Nos services" />
+          <h2 className="text-4xl md:text-6xl font-light italic" style={{ color: 'var(--off-white)' }}>
+            Des prestations complètes,<br />au service de votre jardin
+          </h2>
+        </FadeIn>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px" style={{ background: 'rgba(248,245,239,0.08)' }}>
+          {services.map((service, i) => {
+            const Icon = service.icon
+            return (
+              <FadeIn key={service.title} delay={i * 0.08}>
+                <div className="p-10 group" style={{ background: 'var(--green-deep)' }}>
+                  <div
+                    className="w-10 h-10 flex items-center justify-center mb-6 rounded-full"
+                    style={{ border: '1px solid rgba(111,127,82,0.4)' }}
+                  >
+                    <Icon size={16} style={{ color: 'var(--green-olive)' }} />
+                  </div>
+                  <h3
+                    className="text-2xl font-light italic mb-4"
+                    style={{ color: 'var(--beige-sand)', fontFamily: 'var(--font-cormorant)' }}
+                  >
+                    {service.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed font-light" style={{ color: 'rgba(248,245,239,0.55)' }}>
+                    {service.description}
+                  </p>
+                </div>
+              </FadeIn>
+            )
+          })}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ─── Approche ─── */
+function Approche() {
+  const ref = useRef(null)
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
+  const y = useTransform(scrollYProgress, [0, 1], ['-8%', '8%'])
+
+  return (
+    <section ref={ref} className="relative overflow-hidden" style={{ minHeight: '70vh' }}>
+      <motion.div className="absolute inset-0 scale-110" style={{ y }}>
+        <Image
+          src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920&q=85&fit=crop"
+          alt="Jardin naturel paysager"
+          fill
+          className="object-cover"
+          sizes="100vw"
+        />
+      </motion.div>
+      <div
+        className="absolute inset-0"
+        style={{ background: 'linear-gradient(135deg, rgba(31,61,43,0.88) 0%, rgba(31,61,43,0.5) 100%)' }}
+      />
+
+      <div className="relative z-10 flex items-center min-h-[70vh] px-6 py-32">
+        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+          <FadeIn>
+            <Label text="Notre approche" />
+            <h2 className="text-4xl md:text-5xl font-light italic mb-8" style={{ color: 'var(--off-white)' }}>
+              L'art du jardin<br />dans sa globalité
+            </h2>
+            <div className="h-px w-12 mb-8" style={{ background: 'var(--green-olive)' }} />
+            <p className="text-base leading-relaxed font-light mb-4" style={{ color: 'rgba(248,245,239,0.8)' }}>
+              Notre philosophie repose sur une écoute attentive de vos besoins et une lecture précise du terrain.
+              Chaque intervention est pensée dans le respect du vivant : nous privilégions les essences locales,
+              limitons l'usage de l'eau et favorisons la biodiversité.
+            </p>
+            <p className="text-base leading-relaxed font-light" style={{ color: 'rgba(248,245,239,0.8)' }}>
+              De la première esquisse au suivi saisonnier, nous sommes à vos côtés pour que votre jardin
+              devienne un véritable prolongement de votre intérieur.
+            </p>
+          </FadeIn>
+
+          <FadeIn delay={0.2}>
+            <div className="space-y-8">
+              {[
+                ['01', 'Écoute & conception', 'Nous analysons votre espace et vos envies pour créer un projet sur mesure.'],
+                ['02', 'Réalisation soignée', 'Chaque détail est exécuté avec précision et respect des végétaux.'],
+                ['03', 'Suivi dans le temps', 'Nous assurons un accompagnement durable pour que votre jardin s\'épanouisse.'],
+              ].map(([num, title, desc]) => (
+                <div key={num} className="flex gap-6">
+                  <span className="text-3xl font-light shrink-0" style={{ color: 'var(--green-olive)', fontFamily: 'var(--font-cormorant)' }}>{num}</span>
+                  <div>
+                    <h4 className="text-xl font-light mb-1" style={{ color: 'var(--beige-sand)', fontFamily: 'var(--font-cormorant)' }}>{title}</h4>
+                    <p className="text-sm font-light leading-relaxed" style={{ color: 'rgba(248,245,239,0.65)' }}>{desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </FadeIn>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ─── Réalisations ─── */
+const photos = [
+  { src: 'https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=800&q=80&fit=crop', alt: 'Jardin planté' },
+  { src: 'https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=800&q=80&fit=crop', alt: 'Conception de jardin' },
+  { src: 'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=800&q=80&fit=crop', alt: 'Plantation soignée' },
+  { src: 'https://images.unsplash.com/photo-1526397751294-331021109fbd?w=800&q=80&fit=crop', alt: 'Art de la taille' },
+  { src: 'https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=800&q=80&fit=crop', alt: 'Arbre remarquable' },
+  { src: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&q=80&fit=crop', alt: 'Chemin de jardin' },
+]
+
+function Realisations() {
+  return (
+    <section id="realisations" className="py-32 px-6" style={{ background: 'var(--off-white)' }}>
+      <div className="max-w-6xl mx-auto">
+        <FadeIn className="mb-20">
+          <Label text="Réalisations" />
+          <h2 className="text-4xl md:text-6xl font-light italic" style={{ color: 'var(--green-deep)' }}>
+            Des espaces créés<br />avec passion
+          </h2>
+        </FadeIn>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+          {photos.map((photo, i) => (
+            <FadeIn key={photo.src} delay={i * 0.06}>
+              <div className={`relative overflow-hidden group ${i === 0 ? 'col-span-2 md:col-span-1' : ''} aspect-square`}>
+                <Image
+                  src={photo.src}
+                  alt={photo.alt}
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  sizes="(max-width: 768px) 50vw, 33vw"
+                />
+                <div
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-4"
+                  style={{ background: 'linear-gradient(to top, rgba(31,61,43,0.7), transparent)' }}
+                >
+                  <span className="text-sm font-light" style={{ color: 'var(--off-white)' }}>{photo.alt}</span>
+                </div>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ─── À propos ─── */
+function APropos() {
+  return (
+    <section id="apropos" className="py-32 px-6" style={{ background: 'var(--beige-sand)' }}>
+      <div className="max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-16 items-center">
+          <FadeIn delay={0.1}>
+            <div className="relative aspect-[3/4] overflow-hidden">
+              <Image
+                src="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=900&q=85&fit=crop"
+                alt="Paysage naturel verdoyant"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+            </div>
+          </FadeIn>
+
+          <FadeIn>
+            <Label text="À propos" />
+            <h2 className="text-4xl md:text-5xl font-light italic mb-6" style={{ color: 'var(--green-deep)' }}>
+              Betti Sébastien,<br />paysagiste passionné
+            </h2>
+            <Divider />
+            <p className="mt-8 text-base leading-relaxed font-light" style={{ color: 'var(--green-deep)', opacity: 0.8 }}>
+              Fort d'une expérience de terrain et d'une passion profonde pour le végétal, Betti Sébastien fonde
+              S.D.S Espaces Verts avec une conviction : chaque jardin mérite une attention singulière.
+            </p>
+            <p className="mt-4 text-base leading-relaxed font-light" style={{ color: 'var(--green-deep)', opacity: 0.8 }}>
+              Artisan du paysage, il intervient auprès de particuliers et de professionnels dans le respect
+              des végétaux, du sol et de l'environnement. Son approche combine exigence technique et sens
+              esthétique pour des résultats durables et harmonieux.
+            </p>
+            <div className="mt-10 flex flex-wrap items-center gap-6">
+              <a
+                href="tel:0609714976"
+                className="flex items-center gap-2 text-sm tracking-wide transition-opacity hover:opacity-60"
+                style={{ color: 'var(--green-deep)' }}
+              >
+                <Phone size={14} />
+                <span>06.09.71.49.76</span>
+              </a>
+              <a
+                href="mailto:sbetti83@aol.com"
+                className="flex items-center gap-2 text-sm tracking-wide transition-opacity hover:opacity-60"
+                style={{ color: 'var(--green-deep)' }}
+              >
+                <Mail size={14} />
+                <span>sbetti83@aol.com</span>
+              </a>
+            </div>
+          </FadeIn>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ─── Contact ─── */
+function Contact() {
+  const [sent, setSent] = useState(false)
+  const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' })
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setSent(true)
+  }
+
+  const inputBase = "w-full px-0 py-3 bg-transparent border-b text-sm font-light outline-none placeholder:font-light"
+
+  return (
+    <section id="contact" className="py-32 px-6" style={{ background: 'var(--off-white)' }}>
+      <div className="max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-20">
+          <FadeIn>
+            <Label text="Contact" />
+            <h2 className="text-4xl md:text-5xl font-light italic mb-8" style={{ color: 'var(--green-deep)' }}>
+              Parlons de<br />votre projet
+            </h2>
+            <Divider />
+            <p className="mt-8 text-base leading-relaxed font-light mb-12" style={{ color: 'var(--green-deep)', opacity: 0.7 }}>
+              Vous souhaitez créer ou faire entretenir votre jardin ? Contactez-nous pour un devis gratuit et
+              sans engagement. Nous intervenons dans le Var et ses alentours.
+            </p>
+            <div className="space-y-6">
+              <a href="tel:0609714976" className="flex items-center gap-4 group">
+                <div className="w-10 h-10 flex items-center justify-center rounded-full" style={{ background: 'var(--beige-sand)' }}>
+                  <Phone size={14} style={{ color: 'var(--green-deep)' }} />
+                </div>
+                <div>
+                  <p className="text-xs tracking-widest uppercase mb-0.5" style={{ color: 'var(--green-olive)' }}>Téléphone</p>
+                  <p className="text-base font-light group-hover:opacity-60 transition-opacity" style={{ color: 'var(--green-deep)' }}>06.09.71.49.76</p>
+                </div>
+              </a>
+              <a href="mailto:sbetti83@aol.com" className="flex items-center gap-4 group">
+                <div className="w-10 h-10 flex items-center justify-center rounded-full" style={{ background: 'var(--beige-sand)' }}>
+                  <Mail size={14} style={{ color: 'var(--green-deep)' }} />
+                </div>
+                <div>
+                  <p className="text-xs tracking-widest uppercase mb-0.5" style={{ color: 'var(--green-olive)' }}>Email</p>
+                  <p className="text-base font-light group-hover:opacity-60 transition-opacity" style={{ color: 'var(--green-deep)' }}>sbetti83@aol.com</p>
+                </div>
+              </a>
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={0.2}>
+            {sent ? (
+              <div className="flex flex-col items-center justify-center h-full text-center">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-6" style={{ background: 'var(--beige-sand)' }}>
+                  <Leaf size={24} style={{ color: 'var(--green-olive)' }} />
+                </div>
+                <h3 className="text-2xl font-light italic mb-3" style={{ color: 'var(--green-deep)' }}>Message envoyé</h3>
+                <p className="text-sm font-light" style={{ color: 'var(--green-deep)', opacity: 0.65 }}>
+                  Nous vous répondrons dans les plus brefs délais.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-8">
+                <input
+                  type="text"
+                  placeholder="Votre nom"
+                  required
+                  value={form.name}
+                  onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                  className={inputBase}
+                  style={{ borderColor: 'rgba(31,61,43,0.2)', color: 'var(--green-deep)' }}
+                />
+                <input
+                  type="email"
+                  placeholder="Votre email"
+                  required
+                  value={form.email}
+                  onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                  className={inputBase}
+                  style={{ borderColor: 'rgba(31,61,43,0.2)', color: 'var(--green-deep)' }}
+                />
+                <input
+                  type="tel"
+                  placeholder="Votre téléphone (optionnel)"
+                  value={form.phone}
+                  onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
+                  className={inputBase}
+                  style={{ borderColor: 'rgba(31,61,43,0.2)', color: 'var(--green-deep)' }}
+                />
+                <textarea
+                  placeholder="Décrivez votre projet..."
+                  required
+                  rows={4}
+                  value={form.message}
+                  onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
+                  className={`${inputBase} resize-none`}
+                  style={{ borderColor: 'rgba(31,61,43,0.2)', color: 'var(--green-deep)' }}
+                />
+                <button
+                  type="submit"
+                  className="flex items-center gap-3 text-sm tracking-[0.15em] uppercase px-8 py-4 transition-opacity hover:opacity-80"
+                  style={{ background: 'var(--green-deep)', color: 'var(--off-white)' }}
+                >
+                  Envoyer le message
+                  <ArrowRight size={14} />
+                </button>
+              </form>
+            )}
+          </FadeIn>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ─── Footer ─── */
+function Footer() {
+  return (
+    <footer className="py-12 px-6" style={{ background: 'var(--green-deep)' }}>
+      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+        <div>
+          <p className="text-sm font-light tracking-wide" style={{ color: 'var(--beige-sand)' }}>S.D.S Espaces Verts</p>
+          <p className="text-xs font-light mt-1" style={{ color: 'rgba(232,221,200,0.5)' }}>Betti Sébastien · Paysagiste</p>
+        </div>
+        <div className="flex flex-wrap items-center justify-center gap-6">
+          {[['#intro', 'Introduction'], ['#services', 'Services'], ['#realisations', 'Réalisations'], ['#apropos', 'À propos'], ['#contact', 'Contact']].map(([href, label]) => (
+            <a
+              key={href}
+              href={href}
+              className="text-xs tracking-[0.15em] uppercase transition-opacity hover:opacity-50"
+              style={{ color: 'var(--beige-sand)' }}
+            >
+              {label}
+            </a>
+          ))}
+        </div>
+        <p className="text-xs font-light" style={{ color: 'rgba(232,221,200,0.4)' }}>
+          © {new Date().getFullYear()} S.D.S Espaces Verts
+        </p>
+      </div>
+    </footer>
+  )
+}
+
+/* ─── Sticky phone (mobile only) ─── */
+function StickyPhone() {
+  return (
+    <a
+      href="tel:0609714976"
+      className="fixed bottom-6 right-6 z-50 md:hidden flex items-center gap-2 px-5 py-3 shadow-xl transition-opacity hover:opacity-90"
+      style={{ background: 'var(--green-deep)', color: 'var(--off-white)' }}
+      aria-label="Appeler S.D.S Espaces Verts"
+    >
+      <Phone size={16} />
+      <span className="text-sm font-light tracking-wide">06.09.71.49.76</span>
+    </a>
+  )
+}
+
+/* ─── Root ─── */
+export default function Home() {
+  return (
+    <LenisProvider>
+      <Nav />
+      <main>
+        <Hero />
+        <Introduction />
+        <Services />
+        <Approche />
+        <Realisations />
+        <APropos />
+        <Contact />
+      </main>
+      <Footer />
+      <StickyPhone />
+    </LenisProvider>
   )
 }

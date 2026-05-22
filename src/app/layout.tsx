@@ -1,35 +1,35 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Inter } from "next/font/google";
+import { Cormorant_Garamond, Manrope } from "next/font/google";
 import "./globals.css";
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
+  weight: ["300", "400", "500", "600"],
+  style: ["normal", "italic"],
 });
 
-const inter = Inter({
-  variable: "--font-inter",
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
 });
 
 export const metadata: Metadata = {
-  title: "Drone de Ciel | Spectacles de drones — Tarifs & Prestations",
+  title: "S.D.S Espaces Verts — Création et entretien de jardins",
   description:
-    "Spectacles de drones féériques sur-mesure pour entreprises, collectivités et particuliers. 100 à 800 drones, chorégraphies personnalisées, zéro risque d'incendie.",
+    "S.D.S Espaces Verts, spécialiste en création et entretien de parcs et jardins. Betti Sébastien, paysagiste professionnel. Contactez-nous au 06.09.71.49.76.",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="fr"
-      className={`${playfair.variable} ${inter.variable} h-full antialiased`}
+      className={`${cormorant.variable} ${manrope.variable}`}
     >
-      <body className="min-h-full flex flex-col bg-[#050505]">{children}</body>
+      <body>{children}</body>
     </html>
   );
 }
