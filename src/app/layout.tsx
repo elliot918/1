@@ -3,6 +3,8 @@ import { Cormorant_Garamond, Manrope } from 'next/font/google'
 import { Nav } from '@/components/Nav'
 import { Footer } from '@/components/Footer'
 import { StickyPhone } from '@/components/StickyPhone'
+import { SmoothScroll } from '@/components/SmoothScroll'
+import { Cursor } from '@/components/Cursor'
 import './globals.css'
 
 const cormorant = Cormorant_Garamond({
@@ -28,6 +30,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="fr" className={`${cormorant.variable} ${manrope.variable}`}>
       <body>
+        <SmoothScroll />
+        <Cursor />
         <Nav />
         <main>{children}</main>
         <Footer />

@@ -11,6 +11,10 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+@media (pointer: fine) {
+  *, *::before, *::after { cursor: none !important; }
+}
+
 body {
   background-color: var(--off-white);
   color: var(--green-deep);

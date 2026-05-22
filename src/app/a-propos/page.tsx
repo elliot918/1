@@ -2,10 +2,49 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { useEffect, useRef } from 'react'
 import { Phone, Mail, ArrowRight } from 'lucide-react'
 import { Reveal } from '@/components/Reveal'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+const stats = [
+  { value: 15,   suffix: ' ans',    label: "d'expérience" },
+  { value: 200,  suffix: '+',       label: 'jardins réalisés' },
+  { value: 100,  suffix: '%',       label: 'zéro pesticide' },
+]
 
 export default function APropos() {
+  const statsRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger)
+    const container = statsRef.current
+    if (!container) return
+
+    const counters = Array.from(container.querySelectorAll<HTMLElement>('.counter-val'))
+
+    counters.forEach((el, i) => {
+      const target = stats[i].value
+      const suffix = stats[i].suffix
+      const obj    = { val: 0 }
+
+      gsap.to(obj, {
+        val: target,
+        duration: 1.6,
+        ease: 'power2.out',
+        onUpdate() {
+          el.textContent = Math.round(obj.val) + suffix
+        },
+        scrollTrigger: {
+          trigger: container,
+          start: 'top 82%',
+          once: true,
+        },
+      })
+    })
+  }, [])
+
   return (
     <>
       <section className="page-hero">
@@ -22,7 +61,6 @@ export default function APropos() {
       <section className="py-24" style={{ background: 'var(--off-white)' }}>
         <div className="container">
           <div className="grid md:grid-cols-2 gap-20 items-center">
-            {/* Image */}
             <Reveal delay={0.1}>
               <div className="relative overflow-hidden" style={{ aspectRatio: '4/5' }}>
                 <Image
@@ -35,7 +73,6 @@ export default function APropos() {
               </div>
             </Reveal>
 
-            {/* Content — uniquement les infos du brief */}
             <Reveal>
               <span className="label">Dirigeant</span>
 
@@ -94,6 +131,34 @@ export default function APropos() {
                 </Link>
               </div>
             </Reveal>
+          </div>
+
+          {/* Animated counters */}
+          <div
+            ref={statsRef}
+            className="grid grid-cols-3 gap-px mt-24"
+            style={{ borderTop: '1px solid var(--beige-sand)' }}
+          >
+            {stats.map((s) => (
+              <div
+                key={s.label}
+                className="flex flex-col items-center py-14 gap-2"
+                style={{ background: 'var(--off-white)' }}
+              >
+                <span
+                  className="counter-val text-5xl md:text-6xl font-light italic"
+                  style={{ color: 'var(--green-deep)', fontFamily: 'var(--font-cormorant)' }}
+                >
+                  0{s.suffix}
+                </span>
+                <span
+                  className="text-[0.6rem] tracking-[0.22em] uppercase"
+                  style={{ color: 'var(--green-olive)' }}
+                >
+                  {s.label}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
       </section>
