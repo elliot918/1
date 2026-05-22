@@ -10,100 +10,116 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 /* ─── Hero ─── */
 function Hero() {
-  const sectionRef = useRef<HTMLElement>(null)
-  const imgRef     = useRef<HTMLDivElement>(null)
+  const wrapperRef = useRef<HTMLDivElement>(null)
+  const videoRef   = useRef<HTMLVideoElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
+    const video   = videoRef.current
+    const wrapper = wrapperRef.current
+    if (!video || !wrapper) return
 
-    // Ken Burns entry
-    gsap.fromTo(imgRef.current, { scale: 1.1 }, { scale: 1, duration: 8, ease: 'power1.out' })
+    const ctx = gsap.context(() => {
+      // Entrance animations
+      gsap.fromTo(
+        '.hero-line',
+        { opacity: 0, y: 24 },
+        { opacity: 1, y: 0, duration: 1, stagger: 0.15, delay: 0.4, ease: 'power3.out' }
+      )
+      gsap.fromTo(
+        '.hero-btns',
+        { opacity: 0, y: 16 },
+        { opacity: 1, y: 0, duration: 0.8, delay: 1.1, ease: 'power3.out' }
+      )
 
-    // Parallax on scroll
-    gsap.to(imgRef.current, {
-      yPercent: 28,
-      ease: 'none',
-      scrollTrigger: { trigger: sectionRef.current, start: 'top top', end: 'bottom top', scrub: true },
-    })
+      // Text fades out during first 35% of scroll distance
+      gsap.to(contentRef.current, {
+        opacity: 0,
+        yPercent: -6,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: wrapper,
+          start: 'top top',
+          end: 'top+=35%',
+          scrub: true,
+        },
+      })
 
-    // Content fades out while scrolling
-    gsap.to(contentRef.current, {
-      opacity: 0,
-      yPercent: -8,
-      ease: 'none',
-      scrollTrigger: { trigger: sectionRef.current, start: 'top top', end: '55% top', scrub: true },
-    })
+      // Video scroll scrubbing
+      ScrollTrigger.create({
+        trigger: wrapper,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: true,
+        onUpdate(self) {
+          if (video.duration) {
+            video.currentTime = self.progress * video.duration
+          }
+        },
+      })
+    }, wrapper)
 
-    // Animate in headline
-    gsap.fromTo(
-      '.hero-line',
-      { opacity: 0, y: 24 },
-      { opacity: 1, y: 0, duration: 1, stagger: 0.15, delay: 0.4, ease: 'power3.out' }
-    )
-    gsap.fromTo(
-      '.hero-btns',
-      { opacity: 0, y: 16 },
-      { opacity: 1, y: 0, duration: 0.8, delay: 1.1, ease: 'power3.out' }
-    )
+    return () => ctx.revert()
   }, [])
 
   return (
-    <section ref={sectionRef} className="relative h-screen min-h-[600px] overflow-hidden flex items-center justify-center">
-      <div ref={imgRef} className="absolute inset-0" style={{ willChange: 'transform' }}>
-        <Image
-          src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=1920&q=85&fit=crop"
-          alt="Jardin paysager de luxe"
-          fill priority
-          className="object-cover"
-          sizes="100vw"
+    <div ref={wrapperRef} style={{ height: '200vh' }}>
+      <section className="sticky top-0 h-screen overflow-hidden flex items-center justify-center" style={{ minHeight: 600 }}>
+        <video
+          ref={videoRef}
+          className="absolute inset-0 w-full h-full object-cover"
+          src="/videos/hero.mp4"
+          muted
+          playsInline
+          preload="auto"
         />
-      </div>
 
-      <div
-        className="absolute inset-0"
-        style={{ background: 'linear-gradient(to bottom, rgba(31,61,43,0.5) 0%, rgba(31,61,43,0.25) 50%, rgba(31,61,43,0.6) 100%)' }}
-      />
-
-      <div ref={contentRef} className="relative z-10 text-center px-6 max-w-4xl mx-auto">
-        <p className="hero-line label" style={{ color: 'var(--beige-sand)' }}>
-          S.D.S Espaces Verts
-        </p>
-        <h1
-          className="hero-line text-5xl md:text-7xl lg:text-8xl font-light italic mt-2"
-          style={{ color: 'var(--off-white)', opacity: 0 }}
-        >
-          Création et entretien<br />de jardins durables
-        </h1>
         <div
-          className="hero-line w-12 h-px mx-auto my-8"
-          style={{ background: 'var(--beige-sand)', opacity: 0 }}
+          className="absolute inset-0"
+          style={{ background: 'linear-gradient(to bottom, rgba(31,61,43,0.48) 0%, rgba(31,61,43,0.22) 50%, rgba(31,61,43,0.58) 100%)' }}
         />
-        <div className="hero-btns flex flex-col sm:flex-row gap-6 justify-center items-center" style={{ opacity: 0 }}>
-          <Link href="/contact" className="btn btn-ghost">
-            Demander un devis
-          </Link>
-          <Link
-            href="/services"
-            className="flex items-center gap-3 text-[0.7rem] tracking-[0.18em] uppercase font-medium"
-            style={{
-              color: 'var(--off-white)',
-              fontFamily: 'var(--font-manrope)',
-              transition: 'opacity 0.35s var(--ease-premium)',
-            }}
-            onMouseEnter={e => (e.currentTarget.style.opacity = '0.6')}
-            onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
-          >
-            Découvrir les services <ArrowRight size={12} />
-          </Link>
-        </div>
-      </div>
 
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2" style={{ color: 'var(--beige-sand)' }}>
-        <span className="text-[0.6rem] tracking-[0.25em] uppercase">Défiler</span>
-        <ChevronDown size={14} className="animate-bounce" />
-      </div>
-    </section>
+        <div ref={contentRef} className="relative z-10 text-center px-6 max-w-4xl mx-auto">
+          <p className="hero-line label" style={{ color: 'var(--beige-sand)' }}>
+            S.D.S Espaces Verts
+          </p>
+          <h1
+            className="hero-line text-5xl md:text-7xl lg:text-8xl font-light italic mt-2"
+            style={{ color: 'var(--off-white)', opacity: 0 }}
+          >
+            Création et entretien<br />de jardins durables
+          </h1>
+          <div
+            className="hero-line w-12 h-px mx-auto my-8"
+            style={{ background: 'var(--beige-sand)', opacity: 0 }}
+          />
+          <div className="hero-btns flex flex-col sm:flex-row gap-6 justify-center items-center" style={{ opacity: 0 }}>
+            <Link href="/contact" className="btn btn-ghost">
+              Demander un devis
+            </Link>
+            <Link
+              href="/services"
+              className="flex items-center gap-3 text-[0.7rem] tracking-[0.18em] uppercase font-medium"
+              style={{
+                color: 'var(--off-white)',
+                fontFamily: 'var(--font-manrope)',
+                transition: 'opacity 0.35s var(--ease-premium)',
+              }}
+              onMouseEnter={e => (e.currentTarget.style.opacity = '0.6')}
+              onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+            >
+              Découvrir les services <ArrowRight size={12} />
+            </Link>
+          </div>
+        </div>
+
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2" style={{ color: 'var(--beige-sand)' }}>
+          <span className="text-[0.6rem] tracking-[0.25em] uppercase">Défiler</span>
+          <ChevronDown size={14} className="animate-bounce" />
+        </div>
+      </section>
+    </div>
   )
 }
 
