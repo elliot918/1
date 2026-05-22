@@ -122,3 +122,18 @@ h1, h2, h3, h4 {
   background: var(--green-deep);
   padding: 10rem 0 5rem;
 }
+
+/* ── Nav link underline ── */
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: currentColor;
+  transition: width 0.35s var(--ease-premium);
+}
+.nav-link:hover::after {
+  width: 100%;
+}

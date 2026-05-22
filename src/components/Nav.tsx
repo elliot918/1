@@ -39,7 +39,7 @@ export function Nav() {
       <div className="container flex items-center justify-between">
         <Link
           href="/"
-          className="text-sm tracking-[0.22em] uppercase font-light"
+          className="text-lg tracking-[0.3em] uppercase font-semibold"
           style={{ color: fg, transition: 'color 0.5s var(--ease-premium)' }}
         >
           S.D.S Espaces Verts
@@ -50,10 +50,11 @@ export function Nav() {
             <Link
               key={href}
               href={href}
-              className="text-[0.65rem] tracking-[0.22em] uppercase font-medium hover:opacity-60"
+              className="nav-link text-[0.65rem] tracking-[0.22em] uppercase font-medium relative"
               style={{
                 color: fg,
-                transition: 'color 0.5s var(--ease-premium), opacity 0.3s',
+                transition: 'color 0.5s var(--ease-premium)',
+                fontFamily: 'var(--font-manrope)',
               }}
             >
               {label}
