@@ -69,9 +69,10 @@ function Nav() {
 
   return (
     <nav
-      className="fixed top-0 left-0 right-0 z-50 px-6 py-5 flex items-center justify-between transition-all duration-500"
+      className="fixed top-0 left-0 right-0 z-50 py-5 transition-all duration-500"
       style={{ background: bg, backdropFilter: scrolled ? 'blur(12px)' : 'none' }}
     >
+      <div className="max-w-[1200px] mx-auto px-6 flex items-center justify-between">
       <a href="#" className="text-sm tracking-[0.2em] uppercase font-light transition-colors duration-500" style={{ color: fg }}>
         S.D.S Espaces Verts
       </a>
@@ -86,6 +87,7 @@ function Nav() {
             {['Services', 'Réalisations', 'À propos', 'Contact'][i]}
           </a>
         ))}
+      </div>
       </div>
     </nav>
   )
@@ -197,8 +199,8 @@ function Hero() {
 /* ─── Introduction ─── */
 function Introduction() {
   return (
-    <section id="intro" className="py-32 px-6" style={{ background: 'var(--off-white)' }}>
-      <div className="max-w-5xl mx-auto">
+    <section id="intro" className="py-32" style={{ background: 'var(--off-white)' }}>
+      <div className="max-w-[1200px] mx-auto px-6">
         <div className="grid md:grid-cols-2 gap-16 items-center">
           <FadeIn>
             <Label text="Notre engagement" />
@@ -270,8 +272,8 @@ const services = [
 
 function Services() {
   return (
-    <section id="services" className="py-32 px-6" style={{ background: 'var(--green-deep)' }}>
-      <div className="max-w-6xl mx-auto">
+    <section id="services" className="py-32" style={{ background: 'var(--green-deep)' }}>
+      <div className="max-w-[1200px] mx-auto px-6">
         <FadeIn className="text-center mb-20">
           <Label text="Nos services" />
           <h2 className="text-4xl md:text-6xl font-light italic" style={{ color: 'var(--off-white)' }}>
@@ -332,8 +334,8 @@ function Approche() {
         style={{ background: 'linear-gradient(135deg, rgba(31,61,43,0.88) 0%, rgba(31,61,43,0.5) 100%)' }}
       />
 
-      <div className="relative z-10 flex items-center min-h-[70vh] px-6 py-32">
-        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+      <div className="relative z-10 flex items-center min-h-[70vh] py-32">
+        <div className="max-w-[1200px] mx-auto px-6 w-full grid md:grid-cols-2 gap-16 items-center">
           <FadeIn>
             <Label text="Notre approche" />
             <h2 className="text-4xl md:text-5xl font-light italic mb-8" style={{ color: 'var(--off-white)' }}>
@@ -386,8 +388,8 @@ const photos = [
 
 function Realisations() {
   return (
-    <section id="realisations" className="py-32 px-6" style={{ background: 'var(--off-white)' }}>
-      <div className="max-w-6xl mx-auto">
+    <section id="realisations" className="py-32" style={{ background: 'var(--off-white)' }}>
+      <div className="max-w-[1200px] mx-auto px-6">
         <FadeIn className="mb-20">
           <Label text="Réalisations" />
           <h2 className="text-4xl md:text-6xl font-light italic" style={{ color: 'var(--green-deep)' }}>
@@ -424,11 +426,11 @@ function Realisations() {
 /* ─── À propos ─── */
 function APropos() {
   return (
-    <section id="apropos" className="py-32 px-6" style={{ background: 'var(--beige-sand)' }}>
-      <div className="max-w-5xl mx-auto">
-        <div className="grid md:grid-cols-2 gap-16 items-center">
+    <section id="apropos" className="py-32" style={{ background: 'var(--beige-sand)' }}>
+      <div className="max-w-[1200px] mx-auto px-6">
+        <div className="grid md:grid-cols-2 gap-20 items-center">
           <FadeIn delay={0.1}>
-            <div className="relative aspect-[3/4] overflow-hidden">
+            <div className="relative aspect-[4/5] overflow-hidden">
               <Image
                 src="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=900&q=85&fit=crop"
                 alt="Paysage naturel verdoyant"
@@ -492,8 +494,8 @@ function Contact() {
   const inputBase = "w-full px-0 py-3 bg-transparent border-b text-sm font-light outline-none placeholder:font-light"
 
   return (
-    <section id="contact" className="py-32 px-6" style={{ background: 'var(--off-white)' }}>
-      <div className="max-w-5xl mx-auto">
+    <section id="contact" className="py-32" style={{ background: 'var(--off-white)' }}>
+      <div className="max-w-[1200px] mx-auto px-6">
         <div className="grid md:grid-cols-2 gap-20">
           <FadeIn>
             <Label text="Contact" />
@@ -595,8 +597,8 @@ function Contact() {
 /* ─── Footer ─── */
 function Footer() {
   return (
-    <footer className="py-12 px-6" style={{ background: 'var(--green-deep)' }}>
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+    <footer className="py-12" style={{ background: 'var(--green-deep)' }}>
+      <div className="max-w-[1200px] mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
         <div>
           <p className="text-sm font-light tracking-wide" style={{ color: 'var(--beige-sand)' }}>S.D.S Espaces Verts</p>
           <p className="text-xs font-light mt-1" style={{ color: 'rgba(232,221,200,0.5)' }}>Betti Sébastien · Paysagiste</p>
