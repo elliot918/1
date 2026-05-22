@@ -139,15 +139,87 @@ function Introduction() {
 
 /* ─── Services teaser ─── */
 const serviceTeaser = [
-  { title: 'Création de jardins',     desc: 'Conception et réalisation complète, du terrassement à la plantation.' },
-  { title: 'Entretien régulier',      desc: 'Tonte, désherbage, débroussaillage tout au long de l\'année.' },
-  { title: 'Taille et élagage',       desc: 'Taille soignée des haies, arbustes et arbres selon les cycles végétaux.' },
-  { title: 'Systèmes d\'arrosage',    desc: 'Installation de systèmes automatiques économes en eau.' },
-  { title: 'Amendement des sols',     desc: 'Amélioration de la qualité des sols pour favoriser la croissance.' },
-  { title: 'Pratiques respectueuses', desc: 'Zéro pesticide, biodiversité, espèces locales adaptées.' },
+  {
+    title: 'Création de jardins',
+    desc: 'Conception et réalisation complète, du terrassement à la plantation.',
+    photo: '1512917774080-9991f1c4c750',
+  },
+  {
+    title: 'Entretien régulier',
+    desc: "Tonte, désherbage, débroussaillage tout au long de l'année.",
+    photo: '1501854140801-50d01698950b',
+  },
+  {
+    title: 'Taille et élagage',
+    desc: 'Taille soignée des haies, arbustes et arbres selon les cycles végétaux.',
+    photo: '1533038590840-1cde6e668a91',
+  },
+  {
+    title: "Systèmes d'arrosage",
+    desc: "Installation de systèmes automatiques économes en eau.",
+    photo: '1530836369250-ef72a3f5cda8',
+  },
+  {
+    title: 'Amendement des sols',
+    desc: 'Amélioration de la qualité des sols pour favoriser la croissance.',
+    photo: '1416879595882-3373a0480b5b',
+  },
+  {
+    title: 'Pratiques respectueuses',
+    desc: 'Zéro pesticide, biodiversité, espèces locales adaptées.',
+    photo: '1441974231531-c6227db76b6e',
+  },
 ]
 
 function ServicesTeaser() {
+  const gridRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger)
+    const grid = gridRef.current
+    if (!grid) return
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        '.service-card',
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1, y: 0, duration: 0.75, stagger: 0.08, ease: 'power3.out',
+          scrollTrigger: { trigger: grid, start: 'top 85%', once: true },
+        }
+      )
+    }, grid)
+
+    const cards = Array.from(grid.querySelectorAll<HTMLElement>('.service-card'))
+    const cleanups: (() => void)[] = []
+
+    cards.forEach(card => {
+      const img = card.querySelector<HTMLElement>('.sc-img')
+      const overlay = card.querySelector<HTMLElement>('.sc-overlay')
+
+      const enter = () => {
+        gsap.to(img, { scale: 1.08, duration: 0.7, ease: 'power2.out' })
+        gsap.to(overlay, { opacity: 1, duration: 0.45, ease: 'power2.out' })
+      }
+      const leave = () => {
+        gsap.to(img, { scale: 1, duration: 0.7, ease: 'power2.out' })
+        gsap.to(overlay, { opacity: 0, duration: 0.45, ease: 'power2.out' })
+      }
+
+      card.addEventListener('mouseenter', enter)
+      card.addEventListener('mouseleave', leave)
+      cleanups.push(() => {
+        card.removeEventListener('mouseenter', enter)
+        card.removeEventListener('mouseleave', leave)
+      })
+    })
+
+    return () => {
+      ctx.revert()
+      cleanups.forEach(fn => fn())
+    }
+  }, [])
+
   return (
     <section className="py-32" style={{ background: 'var(--green-deep)' }}>
       <div className="container">
@@ -158,27 +230,45 @@ function ServicesTeaser() {
           </h2>
         </Reveal>
 
-        <div
-          className="grid md:grid-cols-2 lg:grid-cols-3"
-          style={{ borderTop: '1px solid rgba(248,245,239,0.08)', borderLeft: '1px solid rgba(248,245,239,0.08)' }}
-        >
-          {serviceTeaser.map((s, i) => (
-            <Reveal key={s.title} delay={i * 0.06}>
+        <div ref={gridRef} className="grid md:grid-cols-2 lg:grid-cols-3 gap-1">
+          {serviceTeaser.map((s) => (
+            <div
+              key={s.title}
+              className="service-card relative overflow-hidden"
+              style={{ minHeight: '420px' }}
+            >
+              <div className="sc-img absolute inset-0" style={{ willChange: 'transform' }}>
+                <Image
+                  src={`https://images.unsplash.com/photo-${s.photo}?w=800&q=85&fit=crop`}
+                  alt={s.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                />
+              </div>
+
+              {/* Base dark overlay */}
+              <div className="absolute inset-0" style={{ background: 'rgba(31,61,43,0.48)' }} />
+
+              {/* Hover overlay */}
               <div
-                className="p-8"
-                style={{ borderRight: '1px solid rgba(248,245,239,0.08)', borderBottom: '1px solid rgba(248,245,239,0.08)' }}
-              >
+                className="sc-overlay absolute inset-0"
+                style={{ background: 'rgba(31,61,43,0.42)', opacity: 0 }}
+              />
+
+              {/* Text content */}
+              <div className="absolute inset-0 flex flex-col justify-end p-8">
                 <h3
-                  className="text-xl font-light italic mb-3"
-                  style={{ color: 'var(--beige-sand)', fontFamily: 'var(--font-cormorant)' }}
+                  className="text-2xl font-light italic mb-2"
+                  style={{ color: 'var(--off-white)', fontFamily: 'var(--font-cormorant)' }}
                 >
                   {s.title}
                 </h3>
-                <p className="text-xs leading-6 font-light" style={{ color: 'rgba(248,245,239,0.5)' }}>
+                <p className="text-[0.7rem] leading-6 font-light" style={{ color: 'rgba(248,245,239,0.72)' }}>
                   {s.desc}
                 </p>
               </div>
-            </Reveal>
+            </div>
           ))}
         </div>
 
@@ -210,8 +300,8 @@ function Approche() {
     <section ref={sectionRef} className="relative overflow-hidden" style={{ minHeight: '60vh' }}>
       <div ref={imgRef} className="absolute inset-0 scale-110" style={{ willChange: 'transform' }}>
         <Image
-          src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920&q=85&fit=crop"
-          alt="Jardin paysager"
+          src="https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?w=1920&q=85&fit=crop"
+          alt="Paysage naturel"
           fill className="object-cover"
           sizes="100vw"
         />

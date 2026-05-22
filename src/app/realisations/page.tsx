@@ -7,8 +7,8 @@ import { Reveal } from '@/components/Reveal'
 
 const photos = [
   {
-    src: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=85&fit=crop',
-    alt: 'Jardin paysager',
+    src: 'https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?w=900&q=85&fit=crop',
+    alt: 'Paysage naturel',
     span: 'md:col-span-2',
   },
   {
