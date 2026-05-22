@@ -79,9 +79,23 @@ function Hero() {
           className="hero-line w-12 h-px mx-auto my-8"
           style={{ background: 'var(--beige-sand)', opacity: 0 }}
         />
-        <div className="hero-btns flex flex-col sm:flex-row gap-4 justify-center" style={{ opacity: 0 }}>
-          <Link href="/contact" className="btn btn-solid">Demander un devis</Link>
-          <Link href="/services" className="btn btn-ghost">Découvrir les services</Link>
+        <div className="hero-btns flex flex-col sm:flex-row gap-6 justify-center items-center" style={{ opacity: 0 }}>
+          <Link href="/contact" className="btn btn-ghost">
+            Demander un devis
+          </Link>
+          <Link
+            href="/services"
+            className="flex items-center gap-3 text-[0.7rem] tracking-[0.18em] uppercase font-medium"
+            style={{
+              color: 'var(--off-white)',
+              fontFamily: 'var(--font-manrope)',
+              transition: 'opacity 0.35s var(--ease-premium)',
+            }}
+            onMouseEnter={e => (e.currentTarget.style.opacity = '0.6')}
+            onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+          >
+            Découvrir les services <ArrowRight size={12} />
+          </Link>
         </div>
       </div>
 
