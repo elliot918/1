@@ -97,54 +97,48 @@ function Hero() {
         />
 
         {/* TITLE — visible on load, fades out on scroll */}
-        <div ref={titleRef} className="absolute inset-0 z-10 flex items-center justify-center px-6">
+        <div ref={titleRef} className="relative z-10 text-center px-6 max-w-5xl mx-auto">
           <h1
-            className="text-5xl md:text-7xl lg:text-8xl font-light italic text-center max-w-5xl"
+            className="text-5xl md:text-7xl lg:text-8xl font-light italic"
             style={{ color: 'var(--off-white)' }}
           >
             Création et entretien<br />de jardins durables
           </h1>
         </div>
 
-        {/* BRAND — invisible on load (opacity:0 in JSX), appears at mid-scroll via GSAP */}
-        <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-          <div
-            ref={brandRef}
-            className="text-center px-6 max-w-5xl w-full pointer-events-auto"
-            style={{ opacity: 0 }}
+        {/* BRAND — hidden on load, appears at mid-scroll */}
+        <div ref={brandRef} className="absolute z-10 text-center px-6 max-w-5xl mx-auto">
+          <p
+            className="text-xl md:text-2xl tracking-[0.35em] uppercase font-bold mb-6"
+            style={{ color: 'var(--off-white)' }}
           >
-            <p
-              className="text-xl md:text-2xl tracking-[0.35em] uppercase font-bold mb-6"
-              style={{ color: 'var(--off-white)' }}
+            S.D.S Espaces Verts
+          </p>
+          <p
+            className="text-lg md:text-xl font-light italic mt-4"
+            style={{ color: 'rgba(248,245,239,0.85)', fontFamily: 'var(--font-cormorant)' }}
+          >
+            Votre jardin, notre passion
+          </p>
+          <div className="w-12 h-px mx-auto my-8" style={{ background: 'var(--beige-sand)' }} />
+          <div className="flex flex-col sm:flex-row gap-5 justify-center items-center">
+            <Link href="/contact" className="btn btn-ghost text-base px-8 py-4">
+              Demander un devis gratuit
+            </Link>
+            <a
+              href="tel:0609714976"
+              className="flex items-center gap-2 text-sm font-medium tracking-wide"
+              style={{
+                color: 'var(--off-white)',
+                fontFamily: 'var(--font-manrope)',
+                transition: 'opacity 0.3s',
+              }}
+              onMouseEnter={e => (e.currentTarget.style.opacity = '0.65')}
+              onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
             >
-              S.D.S Espaces Verts
-            </p>
-            <p
-              className="text-lg md:text-xl font-light italic mt-4"
-              style={{ color: 'rgba(248,245,239,0.85)', fontFamily: 'var(--font-cormorant)' }}
-            >
-              Votre jardin, notre passion
-            </p>
-            <div className="w-12 h-px mx-auto my-8" style={{ background: 'var(--beige-sand)' }} />
-            <div className="flex flex-col sm:flex-row gap-5 justify-center items-center">
-              <Link href="/contact" className="btn btn-ghost text-base px-8 py-4">
-                Demander un devis gratuit
-              </Link>
-              <a
-                href="tel:0609714976"
-                className="flex items-center gap-2 text-sm font-medium tracking-wide"
-                style={{
-                  color: 'var(--off-white)',
-                  fontFamily: 'var(--font-manrope)',
-                  transition: 'opacity 0.3s',
-                }}
-                onMouseEnter={e => (e.currentTarget.style.opacity = '0.65')}
-                onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
-              >
-                <Phone size={14} style={{ color: 'var(--beige-sand)' }} />
-                06.09.71.49.76
-              </a>
-            </div>
+              <Phone size={14} style={{ color: 'var(--beige-sand)' }} />
+              06.09.71.49.76
+            </a>
           </div>
         </div>
 
