@@ -124,7 +124,7 @@ h1, h2, h3, h4 {
 /* ── Page hero (subpages) ── */
 .page-hero {
   background: var(--green-deep);
-  padding: 10rem 0 5rem;
+  padding: 10rem 0 10rem;
 }
 
 /* ── Nav link underline ── */
