@@ -20,47 +20,54 @@ function Hero() {
     const wrapper = wrapperRef.current
     if (!video || !wrapper) return
 
-    const ctx = gsap.context(() => {
-      // Entrance animations
-      gsap.fromTo(
-        '.hero-line',
-        { opacity: 0, y: 24 },
-        { opacity: 1, y: 0, duration: 1, stagger: 0.15, delay: 0.4, ease: 'power3.out' }
-      )
-      gsap.fromTo(
-        '.hero-btns',
-        { opacity: 0, y: 16 },
-        { opacity: 1, y: 0, duration: 0.8, delay: 1.1, ease: 'power3.out' }
-      )
+    // ── Entrance animations ──────────────────────────────────────
+    gsap.fromTo(
+      '.hero-line',
+      { opacity: 0, y: 24 },
+      { opacity: 1, y: 0, duration: 1, stagger: 0.15, delay: 0.4, ease: 'power3.out' }
+    )
+    gsap.fromTo(
+      '.hero-btns',
+      { opacity: 0, y: 16 },
+      { opacity: 1, y: 0, duration: 0.8, delay: 1.1, ease: 'power3.out' }
+    )
 
-      // Text fades out during first 35% of scroll distance
-      gsap.to(contentRef.current, {
-        opacity: 0,
-        yPercent: -6,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: wrapper,
-          start: 'top top',
-          end: 'top+=35%',
-          scrub: true,
-        },
-      })
-
-      // Video scroll scrubbing
-      ScrollTrigger.create({
+    // ── Text fade (GSAP ScrollTrigger — OK for CSS animations) ───
+    const textTween = gsap.to(contentRef.current, {
+      opacity: 0, yPercent: -6, ease: 'none',
+      scrollTrigger: {
         trigger: wrapper,
         start: 'top top',
-        end: 'bottom bottom',
+        end: '20% top',   // fade complete after 40 vh of scroll
         scrub: true,
-        onUpdate(self) {
-          if (video.duration) {
-            video.currentTime = self.progress * video.duration
-          }
-        },
-      })
-    }, wrapper)
+      },
+    })
 
-    return () => ctx.revert()
+    // ── Video scrub ──────────────────────────────────────────────
+    // Uses getBoundingClientRect() directly — immune to Lenis async lag.
+    // Lenis calls window.scrollTo({ behavior:'instant' }) which fires a
+    // native 'scroll' event synchronously; rect.top is always current.
+    const scrubVideo = () => {
+      const rect       = wrapper.getBoundingClientRect()
+      const vh         = window.innerHeight
+      const scrolled   = Math.max(0, -rect.top)          // px past viewport top
+      const scrollable = rect.height - vh                 // total range = 100 vh
+      const progress   = Math.min(1, scrolled / scrollable)
+
+      if (isFinite(video.duration) && video.duration > 0) {
+        video.currentTime = progress * video.duration
+      }
+    }
+
+    // Run once in case page is already scrolled (e.g. back navigation)
+    scrubVideo()
+    window.addEventListener('scroll', scrubVideo, { passive: true })
+
+    return () => {
+      window.removeEventListener('scroll', scrubVideo)
+      textTween.scrollTrigger?.kill()
+      textTween.kill()
+    }
   }, [])
 
   return (
