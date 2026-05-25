@@ -17,7 +17,7 @@ export function Nav() {
   const isHome = pathname === '/'
 
   useEffect(() => {
-    const check = () => setScrolled(window.scrollY > 60)
+    const check = () => setScrolled(window.scrollY > 70)
     check()
     window.addEventListener('scroll', check, { passive: true })
     return () => window.removeEventListener('scroll', check)
@@ -29,7 +29,7 @@ export function Nav() {
 
   return (
     <nav
-      className="fixed top-0 left-0 right-0 z-50 py-5"
+      className="fixed top-0 left-0 right-0 z-50 min-h-[70px] flex items-center"
       style={{
         background: bg,
         backdropFilter: showBg ? 'blur(12px)' : 'none',

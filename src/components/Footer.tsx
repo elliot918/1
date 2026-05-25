@@ -10,7 +10,7 @@ const links = [
 
 export function Footer() {
   return (
-    <footer className="mt-24 py-16" style={{ background: 'var(--green-deep)' }}>
+    <footer className="mt-24 py-10" style={{ background: 'var(--green-deep)' }}>
       <div className="container flex flex-col items-center gap-8 text-center">
         <p
           className="text-base tracking-[0.28em] uppercase font-semibold"

@@ -446,6 +446,8 @@ export default function Home() {
       <Introduction />
       <ServicesTeaser />
       <Approche />
+      {/* Dégradé progressif entre la section sombre et le beige */}
+      <div style={{ height: '80px', background: 'linear-gradient(to bottom, rgba(31,61,43,0.72), var(--beige-sand))' }} />
       <ContactRapide />
     </>
   )

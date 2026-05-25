@@ -81,7 +81,7 @@ export default function Contact() {
         </div>
       </section>
 
-      <section className="py-24" style={{ background: 'var(--off-white)' }}>
+      <section className="pb-24" style={{ background: 'var(--off-white)', paddingTop: '80px' }}>
         <div className="container">
           <div className="grid md:grid-cols-2 gap-20">
             {/* Info */}
