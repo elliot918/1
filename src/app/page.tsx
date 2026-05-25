@@ -76,11 +76,13 @@ function Hero() {
         <video
           ref={videoRef}
           className="absolute inset-0 w-full h-full object-cover"
-          src="/videos/hero.mp4"
           muted
           playsInline
           preload="auto"
-        />
+        >
+          <source src="/videos/hero.mp4" type="video/mp4" />
+          <source src="/videos/hero.mov" type="video/quicktime" />
+        </video>
 
         <div
           className="absolute inset-0"
