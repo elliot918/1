@@ -5,6 +5,7 @@ import { Footer } from '@/components/Footer'
 import { StickyPhone } from '@/components/StickyPhone'
 import { SmoothScroll } from '@/components/SmoothScroll'
 import { Cursor } from '@/components/Cursor'
+import { ScrollProgress } from '@/components/ScrollProgress'
 import './globals.css'
 
 const cormorant = Cormorant_Garamond({
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="fr" className={`${cormorant.variable} ${manrope.variable}`}>
       <body>
         <SmoothScroll />
+        <ScrollProgress />
         <Cursor />
         <Nav />
         <main>{children}</main>
