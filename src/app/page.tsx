@@ -10,9 +10,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 /* ─── Hero ─── */
 function Hero() {
-  const wrapperRef = useRef<HTMLDivElement>(null)
-  const videoRef   = useRef<HTMLVideoElement>(null)
-  const contentRef = useRef<HTMLDivElement>(null)
+  const wrapperRef  = useRef<HTMLDivElement>(null)
+  const videoRef    = useRef<HTMLVideoElement>(null)
+  const titleRef    = useRef<HTMLDivElement>(null)   // visible on load, fades out on scroll
+  const brandRef    = useRef<HTMLDivElement>(null)   // hidden on load, appears at mid-scroll
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
@@ -20,53 +21,59 @@ function Hero() {
     const wrapper = wrapperRef.current
     if (!video || !wrapper) return
 
-    // ── Entrance animations ──────────────────────────────────────
+    // ── Initial states ───────────────────────────────────────────
+    gsap.set(brandRef.current, { opacity: 0, y: 18 })
+
+    // ── Title : apparaît au chargement ──────────────────────────
     gsap.fromTo(
-      '.hero-line',
-      { opacity: 0, y: 24 },
-      { opacity: 1, y: 0, duration: 1, stagger: 0.15, delay: 0.4, ease: 'power3.out' }
-    )
-    gsap.fromTo(
-      '.hero-btns',
-      { opacity: 0, y: 16 },
-      { opacity: 1, y: 0, duration: 0.8, delay: 1.1, ease: 'power3.out' }
+      titleRef.current,
+      { opacity: 0, y: 22 },
+      { opacity: 1, y: 0, duration: 1.1, delay: 0.35, ease: 'power3.out' }
     )
 
-    // ── Text fade (GSAP ScrollTrigger — OK for CSS animations) ───
-    const textTween = gsap.to(contentRef.current, {
+    // ── Titre disparaît dès le début du scroll (0 → 20 vh) ──────
+    const titleFade = gsap.to(titleRef.current, {
       opacity: 0, yPercent: -6, ease: 'none',
       scrollTrigger: {
         trigger: wrapper,
         start: 'top top',
-        end: '20% top',   // fade complete after 40 vh of scroll
+        end: 'top+=10%',   // 10 % × 200 vh = 20 vh de scroll
+        scrub: true,
+      },
+    })
+
+    // ── Marque + accroche + CTA : apparaissent à mi-scroll ──────
+    // top+=25 % → scroll = 50 vh  (mi-chemin du wrapper 200 vh)
+    // top+=35 % → scroll = 70 vh  (fondu terminé)
+    const brandAppear = gsap.to(brandRef.current, {
+      opacity: 1, y: 0, ease: 'none',
+      scrollTrigger: {
+        trigger: wrapper,
+        start: 'top+=25%',
+        end:   'top+=35%',
         scrub: true,
       },
     })
 
     // ── Video scrub ──────────────────────────────────────────────
-    // Uses getBoundingClientRect() directly — immune to Lenis async lag.
-    // Lenis calls window.scrollTo({ behavior:'instant' }) which fires a
-    // native 'scroll' event synchronously; rect.top is always current.
     const scrubVideo = () => {
       const rect       = wrapper.getBoundingClientRect()
       const vh         = window.innerHeight
-      const scrolled   = Math.max(0, -rect.top)          // px past viewport top
-      const scrollable = rect.height - vh                 // total range = 100 vh
+      const scrolled   = Math.max(0, -rect.top)
+      const scrollable = rect.height - vh
       const progress   = Math.min(1, scrolled / scrollable)
-
       if (isFinite(video.duration) && video.duration > 0) {
         video.currentTime = progress * video.duration
       }
     }
 
-    // Run once in case page is already scrolled (e.g. back navigation)
     scrubVideo()
     window.addEventListener('scroll', scrubVideo, { passive: true })
 
     return () => {
       window.removeEventListener('scroll', scrubVideo)
-      textTween.scrollTrigger?.kill()
-      textTween.kill()
+      titleFade.scrollTrigger?.kill();   titleFade.kill()
+      brandAppear.scrollTrigger?.kill(); brandAppear.kill()
     }
   }, [])
 
@@ -89,39 +96,32 @@ function Hero() {
           style={{ background: 'linear-gradient(to bottom, rgba(31,61,43,0.48) 0%, rgba(31,61,43,0.22) 50%, rgba(31,61,43,0.58) 100%)' }}
         />
 
-        <div ref={contentRef} className="relative z-10 text-center px-6 max-w-5xl mx-auto">
-
-          {/* Brand name — large, bold, white */}
-          <p
-            className="hero-line text-xl md:text-2xl tracking-[0.35em] uppercase font-bold mb-6"
-            style={{ color: 'var(--off-white)', opacity: 0 }}
-          >
-            S.D.S Espaces Verts
-          </p>
-
-          {/* Main headline */}
+        {/* TITLE — visible on load, fades out on scroll */}
+        <div ref={titleRef} className="relative z-10 text-center px-6 max-w-5xl mx-auto">
           <h1
-            className="hero-line text-5xl md:text-7xl lg:text-8xl font-light italic"
-            style={{ color: 'var(--off-white)', opacity: 0 }}
+            className="text-5xl md:text-7xl lg:text-8xl font-light italic"
+            style={{ color: 'var(--off-white)' }}
           >
             Création et entretien<br />de jardins durables
           </h1>
+        </div>
 
-          {/* Emotional tagline */}
+        {/* BRAND — hidden on load, appears at mid-scroll */}
+        <div ref={brandRef} className="absolute z-10 text-center px-6 max-w-5xl mx-auto">
           <p
-            className="hero-line text-lg md:text-xl font-light italic mt-6"
-            style={{ color: 'rgba(248,245,239,0.85)', opacity: 0, fontFamily: 'var(--font-cormorant)' }}
+            className="text-xl md:text-2xl tracking-[0.35em] uppercase font-bold mb-6"
+            style={{ color: 'var(--off-white)' }}
+          >
+            S.D.S Espaces Verts
+          </p>
+          <p
+            className="text-lg md:text-xl font-light italic mt-4"
+            style={{ color: 'rgba(248,245,239,0.85)', fontFamily: 'var(--font-cormorant)' }}
           >
             Votre jardin, notre passion
           </p>
-
-          <div
-            className="hero-line w-12 h-px mx-auto my-8"
-            style={{ background: 'var(--beige-sand)', opacity: 0 }}
-          />
-
-          {/* CTA + phone */}
-          <div className="hero-btns flex flex-col sm:flex-row gap-5 justify-center items-center" style={{ opacity: 0 }}>
+          <div className="w-12 h-px mx-auto my-8" style={{ background: 'var(--beige-sand)' }} />
+          <div className="flex flex-col sm:flex-row gap-5 justify-center items-center">
             <Link href="/contact" className="btn btn-ghost text-base px-8 py-4">
               Demander un devis gratuit
             </Link>
