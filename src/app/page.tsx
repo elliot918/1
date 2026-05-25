@@ -89,37 +89,56 @@ function Hero() {
           style={{ background: 'linear-gradient(to bottom, rgba(31,61,43,0.48) 0%, rgba(31,61,43,0.22) 50%, rgba(31,61,43,0.58) 100%)' }}
         />
 
-        <div ref={contentRef} className="relative z-10 text-center px-6 max-w-4xl mx-auto">
-          <p className="hero-line label" style={{ color: 'var(--beige-sand)' }}>
+        <div ref={contentRef} className="relative z-10 text-center px-6 max-w-5xl mx-auto">
+
+          {/* Brand name — large, bold, white */}
+          <p
+            className="hero-line text-xl md:text-2xl tracking-[0.35em] uppercase font-bold mb-6"
+            style={{ color: 'var(--off-white)', opacity: 0 }}
+          >
             S.D.S Espaces Verts
           </p>
+
+          {/* Main headline */}
           <h1
-            className="hero-line text-5xl md:text-7xl lg:text-8xl font-light italic mt-2"
+            className="hero-line text-5xl md:text-7xl lg:text-8xl font-light italic"
             style={{ color: 'var(--off-white)', opacity: 0 }}
           >
             Création et entretien<br />de jardins durables
           </h1>
+
+          {/* Emotional tagline */}
+          <p
+            className="hero-line text-lg md:text-xl font-light italic mt-6"
+            style={{ color: 'rgba(248,245,239,0.85)', opacity: 0, fontFamily: 'var(--font-cormorant)' }}
+          >
+            Votre jardin, notre passion
+          </p>
+
           <div
             className="hero-line w-12 h-px mx-auto my-8"
             style={{ background: 'var(--beige-sand)', opacity: 0 }}
           />
-          <div className="hero-btns flex flex-col sm:flex-row gap-6 justify-center items-center" style={{ opacity: 0 }}>
-            <Link href="/contact" className="btn btn-ghost">
-              Demander un devis
+
+          {/* CTA + phone */}
+          <div className="hero-btns flex flex-col sm:flex-row gap-5 justify-center items-center" style={{ opacity: 0 }}>
+            <Link href="/contact" className="btn btn-ghost text-base px-8 py-4">
+              Demander un devis gratuit
             </Link>
-            <Link
-              href="/services"
-              className="flex items-center gap-3 text-[0.7rem] tracking-[0.18em] uppercase font-medium"
+            <a
+              href="tel:0609714976"
+              className="flex items-center gap-2 text-sm font-medium tracking-wide"
               style={{
                 color: 'var(--off-white)',
                 fontFamily: 'var(--font-manrope)',
-                transition: 'opacity 0.35s var(--ease-premium)',
+                transition: 'opacity 0.3s',
               }}
-              onMouseEnter={e => (e.currentTarget.style.opacity = '0.6')}
+              onMouseEnter={e => (e.currentTarget.style.opacity = '0.65')}
               onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
             >
-              Découvrir les services <ArrowRight size={12} />
-            </Link>
+              <Phone size={14} style={{ color: 'var(--beige-sand)' }} />
+              06.09.71.49.76
+            </a>
           </div>
         </div>
 
