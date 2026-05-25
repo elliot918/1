@@ -1,11 +1,11 @@
 import type { Metadata } from 'next'
 import { Cormorant_Garamond, Manrope } from 'next/font/google'
+import Script from 'next/script'
 import { Nav } from '@/components/Nav'
 import { Footer } from '@/components/Footer'
 import { StickyPhone } from '@/components/StickyPhone'
 import { SmoothScroll } from '@/components/SmoothScroll'
 import { Cursor } from '@/components/Cursor'
-import { ScrollProgress } from '@/components/ScrollProgress'
 import './globals.css'
 
 const cormorant = Cormorant_Garamond({
@@ -31,8 +31,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="fr" className={`${cormorant.variable} ${manrope.variable}`}>
       <body>
+        <Script id="scroll-progress" strategy="afterInteractive">{`
+          var bar = document.createElement('div');
+          bar.style.cssText = 'position:fixed;top:60px;left:0;height:3px;width:0%;background:#1F3D2B;z-index:9999;transition:width 0.1s';
+          document.body.appendChild(bar);
+          window.addEventListener('scroll', function() {
+            var p = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+            bar.style.width = p + '%';
+          });
+        `}</Script>
         <SmoothScroll />
-        <ScrollProgress />
         <Cursor />
         <Nav />
         <main>{children}</main>
